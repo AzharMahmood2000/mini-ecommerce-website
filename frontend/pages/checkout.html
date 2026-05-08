@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Ms Electronics Hub</title>
+    <link rel="stylesheet" href="../css/checkout-style.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="logo">
+                <img src="../assets/images/logo.png" alt="Logo">
+                <div class="logo-text">MS <br><span>ELECTRONICS HUB</span></div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="product.html">Product</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="checkout-wrapper container">
+        
+        <!-- Left Side: Forms -->
+        <div class="checkout-main">
+            
+            <!-- Section 1: Shipping -->
+            <div class="section-header">
+                <span class="step-num active">1</span>
+                <h2>Shipping Information</h2>
+            </div>
+            
+            <div class="form-card">
+                <form id="shipping-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>FULL NAME</label>
+                            <input type="text" placeholder="BANDARA">
+                        </div>
+                        <div class="form-group">
+                            <label>EMAIL ADDRESS</label>
+                            <input type="email" placeholder="bandara@example.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>STREET ADDRESS</label>
+                        <input type="text" placeholder="124 scot mawatha">
+                    </div>
+
+                    <div class="form-row three-cols">
+                        <div class="form-group">
+                            <label>CITY</label>
+                            <input type="text" placeholder="colombo">
+                        </div>
+                        <div class="form-group">
+                            <label>STATE</label>
+                            <input type="text" placeholder="western">
+                        </div>
+                        <div class="form-group">
+                            <label>MOBILE NUMBER</label>
+                            <input type="text" placeholder="076-5676789">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Section 2: Payment Method -->
+            <div class="section-header">
+                <span class="step-num">2</span>
+                <h2>Payment Method</h2>
+            </div>
+
+            <div class="form-card">
+                <form id="payment-form">
+                    <!-- Payment Method Selection -->
+                    <div class="payment-methods">
+                        <div class="payment-option">
+                            <input type="radio" id="card-payment" name="payment-method" value="card" checked>
+                            <label for="card-payment" class="payment-label">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Credit/Debit Card</span>
+                            </label>
+                        </div>
+
+                        <div class="payment-option">
+                            <input type="radio" id="cod-payment" name="payment-method" value="cod">
+                            <label for="cod-payment" class="payment-label">
+                                <i class="fas fa-money-bill"></i>
+                                <span>Cash on Delivery</span>
+                            </label>
+                        </div>
+
+                        <div class="payment-option">
+                            <input type="radio" id="bank-payment" name="payment-method" value="bank">
+                            <label for="bank-payment" class="payment-label">
+                                <i class="fas fa-university"></i>
+                                <span>Bank Transfer</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Card Details (Visible when card payment selected) -->
+                    <div id="card-details" class="payment-details active">
+                        <h3>Card Details</h3>
+                        
+                        <div class="form-group full-width">
+                            <label>CARDHOLDER NAME</label>
+                            <input type="text" placeholder="JOHN SMITH">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>CARD NUMBER</label>
+                            <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>EXPIRY DATE</label>
+                                <input type="text" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer Details (Hidden by default) -->
+                    <div id="bank-details" class="payment-details">
+                        <h3>Bank Transfer Details</h3>
+                        
+                        <div class="bank-info">
+                            <p><strong>Bank Name:</strong> Central Bank of Sri Lanka</p>
+                            <p><strong>Account Number:</strong> 1234567890</p>
+                            <p><strong>Branch Code:</strong> 123</p>
+                            <p><strong>Reference:</strong> Your Order ID will be provided</p>
+                            <p class="bank-note">Please use your Order ID as the reference when transferring funds.</p>
+                        </div>
+                    </div>
+
+                    <!-- Cash on Delivery (Hidden by default) -->
+                    <div id="cod-details" class="payment-details">
+                        <div class="cod-info">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Cash on Delivery</h3>
+                            <p>Pay the full amount when your order arrives at your doorstep. No additional charges.</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Side: Order Summary -->
+        <aside class="checkout-sidebar">
+            <div class="summary-card">
+                <div class="summary-title">
+                    <h3>Order Summary</h3>
+                    <span class="item-count">(3 items)</span>
+                </div>
+
+                <div class="summary-items">
+                    <!-- Item 1 -->
+                    <div class="summary-item">
+                        <div class="item-thumb">
+                            <img src="../assets/images/Home/1.png" alt="Iphone 17">
+                        </div>
+                        <div class="item-info">
+                            <h4>Iphone 17 Pro Max</h4>
+                            <p class="qty">QTY: 1</p>
+                            <span class="price">Rs.300000</span>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="summary-item">
+                        <div class="item-thumb">
+                            <img src="../assets/images/Home/5.png" alt="Headphones">
+                        </div>
+                        <div class="item-info">
+                            <h4>Sony Headphone</h4>
+                            <p class="qty">QTY: 2</p>
+                            <span class="price">Rs.82500</span>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="summary-item">
+                        <div class="item-thumb">
+                            <img src="../assets/images/product/4.png" alt="Laptop">
+                        </div>
+                        <div class="item-info">
+                            <h4>Asus ROG Zephyrus</h4>
+                            <p class="qty">QTY: 1</p>
+                            <span class="price">Rs.450000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="totals-section">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span>Rs.832500</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping</span>
+                        <span class="free-text">FREE</span>
+                    </div>
+                    <div class="grand-total">
+                        <span>Total</span>
+                        <span class="amount">Rs.832500</span>
+                    </div>
+                </div>
+
+                <button class="place-order-btn">
+                    PLACE ORDER <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="../js/navbar.js"></script>
+    <script src="../js/checkout.js"></script>
+</body>
+</html>

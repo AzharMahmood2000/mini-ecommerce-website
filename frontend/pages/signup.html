@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <link rel="stylesheet" href="../css/signup-style.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- Left Section: Registration Form -->
+        <div class="form-section">
+            <h2>Registration</h2>
+            
+            <form id="registrationForm">
+                <input type="text" placeholder="Username" class="input-field" required>
+                <input type="email" placeholder="Email" class="input-field" required>
+                <input type="password" placeholder="Password" class="input-field" required>
+                
+                <button type="submit" class="register-btn">Register</button>
+            </form>
+
+            <div class="divider">
+                <span>or Register in with</span>
+            </div>
+
+            <div class="social-links">
+                <img src="../assets/images/devicon_google.png" alt="Google">
+                <img src="../assets/images/logos_facebook.png" alt="Facebook">
+            </div>
+        </div>
+
+        <!-- Right Section: Welcome Panel -->
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <h1>Welcome Back</h1>
+                <p>Already have an Account</p>
+                <button class="login-toggle-btn">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/signup.js"></script>
+</body>
+</html>

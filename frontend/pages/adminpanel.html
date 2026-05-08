@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Management Suite</title>
+    <link rel="stylesheet" href="../css/adminpanel-style.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Admin Panel</h3>
+                <p>MANAGEMENT SUITE</p>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><i class="fa-solid fa-table-columns"></i> Dashboard</li>
+                    <li><i class="fa-solid fa-box-archive"></i> Inventory</li>
+                    <li><i class="fa-solid fa-chart-line"></i> Sales</li>
+                    <li><i class="fa-solid fa-users"></i> Customers</li>
+                    <li><i class="fa-solid fa-chart-pie"></i> Analytics</li>
+                    <li><i class="fa-solid fa-file-lines"></i> Reports</li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="add-btn"><i class="fa-solid fa-plus"></i> Add New Product</button>
+                <div class="footer-link"><i class="fa-regular fa-circle-question"></i> Help Center</div>
+                <div class="footer-link logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navbar -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h2>Ms Electronics Hub</h2>
+                </div>
+                <div class="header-center">
+                    <div class="search-bar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Search analytics, inventory...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="header-icons">
+                        <i class="fa-solid fa-gear"></i>
+                        <div class="notification-icon">
+                            <i class="fa-regular fa-bell"></i>
+                            <span class="dot-alert"></span>
+                        </div>
+                        <i class="fa-regular fa-message"></i>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="user-name">Admin User</span>
+                            <span class="user-role">Administrator</span>
+                        </div>
+                        <i class="fa-solid fa-circle-user avatar-icon"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Row -->
+            <section class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-main">
+                        <p>Total Sales</p>
+                        <h2>Rs 284,000</h2>
+                        <span class="trend up"><i class="fa-solid fa-arrow-trend-up"></i> +12.5% from last month</span>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-main">
+                        <p>Active Orders</p>
+                        <h2>1,284</h2>
+                        <span class="subtext">Current fulfillment rate: 98%</span>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-truck"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-main">
+                        <p>Stock Level</p>
+                        <h2>42,910</h2>
+                        <span class="trend down"><i class="fa-solid fa-triangle-exclamation"></i> 42 items low in stock</span>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-warehouse"></i></div>
+                </div>
+            </section>
+
+            <!-- Middle Row: Chart and Top Performers -->
+            <section class="middle-row">
+                <div class="chart-container card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Revenue Performance</h3>
+                            <p>Monthly sales vs. projected forecast</p>
+                        </div>
+                        <div class="legend">
+                            <span><span class="dot sales"></span> Sales</span>
+                            <span><span class="dot forecast"></span> Forecast</span>
+                        </div>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="bar-group">
+                            <div class="bar" style="height: 40%;"></div>
+                            <span>JAN</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" style="height: 60%;"></div>
+                            <span>FEB</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" style="height: 75%;"></div>
+                            <span>MAR</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar active" style="height: 90%;"></div>
+                            <span>APR</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" style="height: 55%;"></div>
+                            <span>MAY</span>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar forecast" style="height: 80%;"></div>
+                            <span>JUN</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="performers-container card">
+                    <div class="card-header">
+                        <h3>Top Performers</h3>
+                        <p>Highest grossing hardware</p>
+                    </div>
+                    <ul class="performer-list">
+                        <li>
+                            <img src="../assets/images/Home/1.png" alt="Pro-X1 Chipset" class="p-img">
+                            <div class="p-info">
+                                <strong>Pro-X1 Chipset</strong><br>
+                                <small>842 units sold</small>
+                            </div>
+                            <div class="p-value">
+                                <strong>Rs 124,500</strong><br>
+                                <small class="up">+18%</small>
+                            </div>
+                        </li>
+                        <li>
+                            <img src="../assets/images/Home/2.png" alt="Aura-H1 Audio" class="p-img">
+                            <div class="p-info">
+                                <strong>Aura-H1 Audio</strong><br>
+                                <small>512 units sold</small>
+                            </div>
+                            <div class="p-value">
+                                <strong>Rs 82,100</strong><br>
+                                <small class="up">+5%</small>
+                            </div>
+                        </li>
+                        <li>
+                            <img src="../assets/images/Home/3.png" alt="Spectra 4K Display" class="p-img">
+                            <div class="p-info">
+                                <strong>Spectra 4K Display</strong><br>
+                                <small>311 units sold</small>
+                            </div>
+                            <div class="p-value">
+                                <strong>Rs 64,200</strong><br>
+                                <small class="down">-2%</small>
+                            </div>
+                        </li>
+                    </ul>
+                    <button class="ghost-btn">View Full Inventory</button>
+                </div>
+            </section>
+
+            <!-- Bottom: Table -->
+            <section class="table-container card">
+                <div class="card-header">
+                    <div>
+                        <h3>Real-time Operations</h3>
+                        <p>Live feed of recent global transactions</p>
+                    </div>
+                    <button class="filter-btn"><i class="fa-solid fa-sliders"></i> Filter Table</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ORDER ID</th>
+                            <th>PRODUCT</th>
+                            <th>CUSTOMER</th>
+                            <th>STATUS</th>
+                            <th>AMOUNT</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#MEH-89102</td>
+                            <td><img src="../assets/images/Home/4.png" alt="Earbuds Pro" class="p-icon"> Earbuds Pro</td>
+                            <td><span class="avatar">JD</span> Nasar M.</td>
+                            <td><span class="badge processed">PROCESSED</span></td>
+                            <td><strong>Rs 2500</strong></td>
+                            <td><i class="fa-solid fa-ellipsis-vertical"></i></td>
+                        </tr>
+                        <tr>
+                            <td>#MEH-89103</td>
+                            <td><img src="../assets/images/Home/6.png" alt="Jbl Party box" class="p-icon"> Jbl Party box</td>
+                            <td><span class="avatar">SW</span> Sarath W.</td>
+                            <td><span class="badge shipping">SHIPPING</span></td>
+                            <td><strong>Rs 12500</strong></td>
+                            <td><i class="fa-solid fa-ellipsis-vertical"></i></td>
+                        </tr>
+                        <tr>
+                            <td>#MEH-89104</td>
+                            <td><img src="../assets/images/Home/7.png" alt="Home Theatre" class="p-icon"> Home Theatre</td>
+                            <td><span class="avatar">MK</span> Michael K.</td>
+                            <td><span class="badge processed">PROCESSED</span></td>
+                            <td><strong>Rs 45000</strong></td>
+                            <td><i class="fa-solid fa-ellipsis-vertical"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="table-footer">
+                    <span>Showing 3 of 1,284 recent transactions</span>
+                    <div class="pagination">
+                        <button disabled>Previous</button>
+                        <button>Next</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

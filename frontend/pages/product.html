@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ms Electronics Hub - Products</title>
+    <link rel="stylesheet" href="../css/home-style.css">
+    <link rel="stylesheet" href="../css/product-style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <img src="../assets/images/logo.png" alt="Logo" class="logo-img">
+                <h1>Ms Electronics Hub</h1>
+            </div>
+            <nav class="nav-links">
+                <a href="../index.html">Home</a>
+                <a href="product.html" class="active">Products</a>
+                <a href="cart.html">Cart</a>
+                <a href="login.html">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="product-page">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="filter-section">
+                <h3 class="filter-title">CATEGORIES</h3>
+                <span class="filter-subtitle">FILTER BY TYPE</span>
+                
+                <ul class="category-list">
+                    <li class="active"><i class="fas fa-desktop"></i> ALL ELECTRONICS</li>
+                    <li><i class="fas fa-laptop"></i> INFORMATION SYSTEMS</li>
+                    <li><i class="fas fa-mobile-alt"></i> MOBILE DEVICES</li>
+                    <li><i class="fas fa-headphones-alt"></i> AUDIO</li>
+                    <li><i class="fas fa-gamepad"></i> GAMING</li>
+                </ul>
+            </div>
+            
+            <div class="filter-section">
+                <h3 class="filter-title">PRICE RANGE</h3>
+                <div class="price-slider">
+                    <div class="slider-inputs">
+                        <input type="number" id="min-price" placeholder="Min" value="0">
+                        <span>-</span>
+                        <input type="number" id="max-price" placeholder="Max" value="500000">
+                    </div>
+                    <div class="price-values">
+                        <span id="min-price-display">Rs 0</span>
+                        <span id="max-price-display">Rs 500000+</span>
+                    </div>
+                    <button id="apply-price-filter" class="apply-btn">Apply Filter</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content area -->
+        <section class="products-area">
+            <div class="products-grid-custom" id="pd-grid">
+                <!-- Products will be loaded here dynamically -->
+            </div>
+            
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <span class="page-dots">...</span>
+                <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Shared Footer from home.html -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <span class="bars">|||</span>
+                    <span class="brand-name">Ms Electronics Hub</span>
+                </div>
+                <p class="footer-desc">We Deliver high quality electronics with reliable service and island delivery.</p>
+                <hr class="footer-divider">
+                <p class="copyright">© 2026 All Rights Reserved</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>FOLLOW US</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+                <h4 class="call-us-title">CALL US</h4>
+                <p class="phone-number">077-3456576</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>PRODUCT</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Mobile Phones</a></li>
+                    <li><a href="#">Headphones</a></li>
+                    <li><a href="#">Tablets</a></li>
+                    <li><a href="#">Party Box</a></li>
+                    <li><a href="#">Computer Accessories</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>PAYMENTS</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Visa / MasterCard</a></li>
+                    <li><a href="#">Cash on Delivery</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="container legal-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Sales and Refunds</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="../js/navbar.js"></script>
+    <script src="../js/product.js"></script>
+</body>
+</html>

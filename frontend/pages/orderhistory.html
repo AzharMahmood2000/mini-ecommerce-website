@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - Ms Electronics Hub</title>
+    <link rel="stylesheet" href="../css/orderhistory-style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="logo">
+                <img src="../assets/images/logo.png" alt="Logo">
+                <div class="logo-text">MS <br><span>ELECTRONICS HUB</span></div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="product.html">Product</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Page Title -->
+        <header class="page-header">
+            <h1>Order History</h1>
+            <p>Manage your recent high-performance electronics purchases and track current shipments.</p>
+        </header>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon icon-active">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">ACTIVE ORDERS</span>
+                    <span class="stat-value">3</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-transit">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">IN TRANSIT</span>
+                    <span class="stat-value">1</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-purchases">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">TOTAL PURCHASES</span>
+                    <span class="stat-value">12</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transactions Table Container -->
+        <section class="transactions-wrapper">
+            <div class="transactions-header">
+                <h2>Recent Transactions</h2>
+                <div class="tab-buttons">
+                    <button class="tab-btn active">All Orders</button>
+                    <button class="tab-btn">Returns</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th>ORDER ID</th>
+                            <th>DATE</th>
+                            <th>PRODUCTS</th>
+                            <th>STATUS</th>
+                            <th>TOTAL</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1 -->
+                        <tr>
+                            <td class="order-id">#ORD-1024</td>
+                            <td class="order-date">May 12, 2024</td>
+                            <td>
+                                <div class="product-stack">
+                                    <img src="../assets/images/Home/3.png" alt="item">
+                                    <img src="../assets/images/Home/4.png" alt="item">
+                                    <span class="more-items">+1</span>
+                                </div>
+                            </td>
+                            <td><span class="badge status-shipped">Shipped</span></td>
+                            <td class="order-total">Rs.300000</td>
+                            <td class="order-action"><a href="#">View Details <i class="fas fa-chevron-right"></i></a></td>
+                        </tr>
+                        <!-- Row 2 -->
+                        <tr>
+                            <td class="order-id">#ORD-0988</td>
+                            <td class="order-date">April 28, 2024</td>
+                            <td>
+                                <div class="product-stack">
+                                    <img src="../assets/images/Home/1.png" alt="item">
+                                    <img src="../assets/images/Home/2.png" alt="item">
+                                </div>
+                            </td>
+                            <td><span class="badge status-delivered">Delivered</span></td>
+                            <td class="order-total">Rs.130000</td>
+                            <td class="order-action"><a href="#">View Details <i class="fas fa-chevron-right"></i></a></td>
+                        </tr>
+                        <!-- Row 3 -->
+                        <tr>
+                            <td class="order-id">#ORD-0852</td>
+                            <td class="order-date">April 15, 2024</td>
+                            <td>
+                                <div class="product-stack">
+                                    <img src="../assets/images/Home/6.png" alt="item">
+                                </div>
+                            </td>
+                            <td><span class="badge status-delivered">Delivered</span></td>
+                            <td class="order-total">Rs.150000</td>
+                            <td class="order-action"><a href="#">View Details <i class="fas fa-chevron-right"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer / Pagination -->
+            <div class="transactions-footer">
+                <span class="showing-text">Showing 3 of 12 orders</span>
+                <div class="pagination">
+                    <button class="page-arrow"><i class="fas fa-chevron-left"></i></button>
+                    <button class="page-arrow"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <span class="bars">|||</span>
+                    <span class="brand-name">Ms Electronics Hub</span>
+                </div>
+                <p class="footer-desc">We Deliver high quality electronics with reliable service and island delivery.</p>
+                <hr class="footer-divider">
+                <p class="copyright">© 2026 All Rights Reserved</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>FOLLOW US</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+                <h4 class="call-us-title">CALL US</h4>
+                <p class="phone-number">077-3456576</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>PRODUCT</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Mobile Phones</a></li>
+                    <li><a href="#">Headphones</a></li>
+                    <li><a href="#">Tablets</a></li>
+                    <li><a href="#">Party Box</a></li>
+                    <li><a href="#">Computer Accessories</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>PAYMENTS</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Visa / MasterCard</a></li>
+                    <li><a href="#">Cash on Delivery</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="container legal-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Sales and Refunds</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/navbar.js"></script>
+    <script src="../js/orderhistory.js"></script>
+</body>
+</html>

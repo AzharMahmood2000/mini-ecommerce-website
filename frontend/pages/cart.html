@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Ms Electronics Hub</title>
+    <link rel="stylesheet" href="../css/cart-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <div class="logo">
+                <img src="../assets/images/logo.png" alt="Logo">
+                <div class="logo-text">MS <br><span>ELECTRONICS HUB</span></div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="product.html">Product</a></li>
+                <li><a href="cart.html" class="active">Cart</a></li>
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="cart-header">
+        <h1>SHOPPING CART</h1>
+        <p>Review your premium tech selection before checkout.</p>
+    </header>
+
+    <main class="container">
+        <hr class="header-divider">
+
+        <div class="trust-bar">
+            <div class="trust-item">
+                <i class="fas fa-truck" style="color: #0d9488;"></i>
+                <div>
+                    <strong>Free Global Delivery</strong>
+                    <span>On orders above Rs. 100,000</span>
+                </div>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-shield-alt" style="color: #0d9488;"></i>
+                <div>
+                    <strong>Secure Transaction</strong>
+                    <span>128-bit SSL encrypted system</span>
+                </div>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-sync-alt" style="color: #0d9488;"></i>
+                <div>
+                    <strong>30-Day Returns</strong>
+                    <span>No questions asked policy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-layout">
+            <div class="cart-items-container">
+                <div class="cart-items-section">
+                    <div class="cart-item" data-price="300000" data-index="0">
+                        <div class="item-img">
+                            <img src="../assets/images/Home/1.png" alt="Iphone 17 Pro Max" onerror="this.src='https://via.placeholder.com/110'">
+                        </div>
+                        <div class="item-details">
+                            <h3>Iphone 17 Pro Max</h3>
+                            <p>Space Titanium • 512GB</p>
+                            <div class="item-actions">
+                                <button class="remove-btn"><i class="far fa-trash-alt"></i> REMOVE</button>
+                                <button class="save-btn"><i class="far fa-heart"></i> SAVE FOR LATER</button>
+                            </div>
+                        </div>
+                        <div class="item-quantity-price">
+                            <div class="quantity-control">
+                                <button class="qty-btn minus">-</button>
+                                <span class="qty-val">1</span>
+                                <button class="qty-btn plus">+</button>
+                            </div>
+                            <div>
+                                <div class="item-price">Rs. <span class="price-val">300,000</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cart-item" data-price="42500" data-index="1">
+                        <div class="item-img">
+                            <img src="../assets/images/Home/5.png" alt="Sony Headphone" onerror="this.src='https://via.placeholder.com/110'">
+                        </div>
+                        <div class="item-details">
+                            <h3>Sony Headphone</h3>
+                            <p>Midnight Teal • Noise Canceling</p>
+                            <div class="item-actions">
+                                <button class="remove-btn"><i class="far fa-trash-alt"></i> REMOVE</button>
+                                <button class="save-btn"><i class="far fa-heart"></i> SAVE FOR LATER</button>
+                            </div>
+                        </div>
+                        <div class="item-quantity-price">
+                            <div class="quantity-control">
+                                <button class="qty-btn minus">-</button>
+                                <span class="qty-val">2</span>
+                                <button class="qty-btn plus">+</button>
+                            </div>
+                            <div>
+                                <div class="item-price">Rs. <span class="price-val">85,000</span></div>
+                                <span class="unit-price" style="display: block; font-size: 11px; color: var(--text-muted); margin-top: 4px;">Rs. 42,500 each</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cart-item" data-price="450000" data-index="2">
+                        <div class="item-img">
+                            <img src="../assets/images/product/4.png" alt="Asus ROG Zephyrus" onerror="this.src='https://via.placeholder.com/110'">
+                        </div>
+                        <div class="item-details">
+                            <h3>Asus ROG Zephyrus</h3>
+                            <p>RTX 4090 • 32GB RAM</p>
+                            <div class="item-actions">
+                                <button class="remove-btn"><i class="far fa-trash-alt"></i> REMOVE</button>
+                                <button class="save-btn"><i class="far fa-heart"></i> SAVE FOR LATER</button>
+                            </div>
+                        </div>
+                        <div class="item-quantity-price">
+                            <div class="quantity-control">
+                                <button class="qty-btn minus">-</button>
+                                <span class="qty-val">1</span>
+                                <button class="qty-btn plus">+</button>
+                            </div>
+                            <div>
+                                <div class="item-price">Rs. <span class="price-val">450,000</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cart-footer-actions">
+                    <a href="../index.html" class="continue-shopping"><i class="fas fa-arrow-left"></i> CONTINUE SHOPPING</a>
+                    <button class="update-cart"><i class="fas fa-sync-alt"></i> UPDATE CART</button>
+                </div>
+            </div>
+
+            <aside class="order-summary">
+                <div class="summary-card">
+                    <h2>Order Summary</h2>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="subtotal">Rs. 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping Cost</span>
+                        <span class="free-tag">FREE</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Sales Tax (Estimated)</span>
+                        <span>Rs. 0</span>
+                    </div>
+                    <hr>
+                    <div class="total-row">
+                        <span>Total</span>
+                        <span id="grand-total">Rs. 0</span>
+                    </div>
+                    <p class="summary-note">Excluding delivery charges and international taxes if applicable.</p>
+                    <div class="promo-box">
+                        <i class="fas fa-tag" style="padding: 12px 10px; color: #9ca3af; font-size: 13px;"></i>
+                        <input type="text" placeholder="Promo code">
+                        <button>APPLY</button>
+                    </div>
+                    <button class="checkout-btn">PROCEED TO CHECKOUT <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="warranty-card">
+                    <div class="warranty-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="warranty-text">
+                        <strong>Ms Warranty Plus</strong>
+                        <p>Get 2 years of extended protection on all hub products.</p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <span class="bars">|||</span>
+                    <span class="brand-name">Ms Electronics Hub</span>
+                </div>
+                <p class="footer-desc">We Deliver high quality electronics with reliable service and island delivery.</p>
+                <hr class="footer-divider">
+                <p class="copyright">© 2026 All Rights Reserved</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>FOLLOW US</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+                <h4 class="call-us-title">CALL US</h4>
+                <p class="phone-number">077-3456576</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>PRODUCT</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Mobile Phones</a></li>
+                    <li><a href="#">Headphones</a></li>
+                    <li><a href="#">Tablets</a></li>
+                    <li><a href="#">Party Box</a></li>
+                    <li><a href="#">Computer Accessories</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>PAYMENTS</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Visa / MasterCard</a></li>
+                    <li><a href="#">Cash on Delivery</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container legal-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Sales and Refunds</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/navbar.js"></script>
+    <script src="../js/cart.js"></script>
+</body>
+</html>

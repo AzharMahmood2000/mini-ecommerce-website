@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile | Settings</title>
+    <link rel="stylesheet" href="../css/profile-style.css">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Area -->
+        <div class="sidebar-area">
+            <aside class="sidebar-card">
+                <div class="user-header">
+                    <div class="avatar-wrapper">
+                        <img src="../assets/images/account.png" alt="Profile Picture" class="avatar">
+                    </div>
+                    <div class="user-info">
+                        <h3>Your name</h3>
+                        <p>yourname@gmail.com</p>
+                    </div>
+                </div>
+                
+                <nav class="side-nav">
+                    <a href="#" class="nav-item active">
+                        <i data-lucide="user"></i>
+                        <span>My Profile</span>
+                        <i data-lucide="chevron-right" class="arrow-icon"></i>
+                    </a>
+                    <a href="orderhistory.html" class="nav-item">
+                        <i data-lucide="clipboard-list"></i>
+                        <span>Order History</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i data-lucide="shield-check"></i>
+                        <span>Security</span>
+                    </a>
+                </nav>
+            </aside>
+
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content-area">
+            <main class="profile-edit-card">
+                <div class="card-header">
+                    <div class="header-user-info">
+                        <div class="avatar-edit-wrapper">
+                            <img src="../assets/images/account.png" alt="Profile Picture" class="avatar-large">
+                            <button class="edit-btn" title="Change Photo">
+                                <i data-lucide="pencil"></i>
+                            </button>
+                        </div>
+                        <div class="user-detail-text">
+                            <h2>Your name</h2>
+                            <p>yourname@gmail.com</p>
+                        </div>
+                    </div>
+                    <button class="close-btn" title="Close">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" value="your name" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email account</label>
+                        <input type="email" id="email" value="yourname@gmail.com" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">Mobile number</label>
+                        <input type="tel" id="mobile" value="" placeholder="Add number">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" value="USA" placeholder="Enter location">
+                    </div>
+
+                    <button type="submit" class="save-btn" id="save-btn">Save Change</button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/profile.js"></script>
+</body>
+</html>

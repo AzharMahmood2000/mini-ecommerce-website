@@ -1,0 +1,322 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Georgia', serif; /* Matching the serif font style */
+}
+
+body {
+    background-color: #f0f2f5;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* PAGE CONTAINER WITH TRANSITION */
+.page-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+    z-index: 1;
+}
+
+.page-container.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+}
+
+.login-container {
+    background-color: #f7f9fc;
+    width: 850px;
+    height: 550px;
+    display: flex;
+    flex-direction: row-reverse;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+/* LEFT PANEL STYLING */
+.left-panel {
+    flex: 0 0 40%;
+    background: linear-gradient(180deg, #00f2ff 0%, #008080 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    /* This creates the large curved bulge on the left (now that it's on the right side) */
+    border-top-left-radius: 110px;
+    border-bottom-left-radius: 110px;
+    border-left: 2px solid rgba(0,0,0,0.2);
+    transform: translateX(-100%);
+    transition: transform 1s ease-in-out;
+}
+
+.page-container.active .left-panel {
+    transform: translateX(0);
+}
+
+.welcome-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+    font-weight: normal;
+}
+
+.welcome-content p {
+    font-size: 1rem;
+    margin-bottom: 30px;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.register-btn {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 12px 45px;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.register-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* RIGHT PANEL STYLING */
+.right-panel {
+    flex: 1.3;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.right-panel h2 {
+    font-size: 2rem;
+    color: #000;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: white;
+    color: #666;
+}
+
+.forgot-password {
+    display: block;
+    color: #4b0082;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(to right, #2bcbfb, #4189f3);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(65, 137, 243, 0.3);
+    transition: transform 0.2s;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 30px 0;
+    color: #333;
+}
+
+.separator::before, .separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #333;
+}
+
+.separator span {
+    padding: 0 15px;
+    font-size: 0.9rem;
+}
+
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* SIGNUP PAGE STYLES */
+/* The Main Card */
+.main-container {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 900px;
+    height: 550px;
+    background-color: #f8fbff;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* FORM SECTION (LEFT SIDE) */
+.form-section {
+    flex: 1.2; /* Slightly wider than the right side */
+    padding: 50px 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-section h2 {
+    font-size: 2.2rem;
+    margin-bottom: 35px;
+    text-align: center;
+    color: #000;
+}
+
+.input-field {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    background: white;
+    color: #666;
+}
+
+.form-section .register-btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    background: linear-gradient(to right, #2bcbfb, #4189f3);
+    box-shadow: 0 4px 15px rgba(65, 137, 243, 0.3);
+    transition: transform 0.2s;
+}
+
+.form-section .register-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+    background: linear-gradient(to right, #2bcbfb, #4189f3);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+    color: #333;
+}
+
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #333;
+}
+
+.divider span {
+    padding: 0 10px;
+    font-size: 0.95rem;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-links img {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+/* WELCOME SECTION (NOW ON LEFT SIDE WITH CURVE) */
+.welcome-section {
+    flex: 0 0 40%; /* Slightly narrower than the form side */
+    background: linear-gradient(180deg, #00f2ff 0%, #006060 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    position: relative;
+    
+    /* Creating the curve on the RIGHT side (now that it's on the left) */
+    border-top-right-radius: 110px;
+    border-bottom-right-radius: 110px;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    
+    transform: translateX(100%);
+    transition: transform 1s ease-in-out;
+}
+
+.page-container.active .welcome-section {
+    transform: translateX(0);
+}
+
+.login-toggle-btn {
+    background: linear-gradient(to bottom, #00f2ff, #00a8a8);
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 12px 50px;
+    border-radius: 15px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.login-toggle-btn:hover {
+    transform: scale(1.05);
+}
+
+.social-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.2s;
+}
+
+.social-icon:hover {
+    opacity: 0.8;
+}

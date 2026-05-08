@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Georgia', serif; /* Matching the serif font in the image */
+}
+
+body {
+    background-color: #ffffff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* The Main Card */
+.main-container {
+    display: flex;
+    width: 900px;
+    height: 550px;
+    background-color: #f8fbff;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* FORM SECTION (LEFT SIDE) */
+.form-section {
+    flex: 1.2; /* Slightly wider than the right side */
+    padding: 50px 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-section h2 {
+    font-size: 2.2rem;
+    margin-bottom: 35px;
+    text-align: center;
+    color: #000;
+}
+
+.input-field {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    background: white;
+    color: #666;
+}
+
+.register-btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    /* Gradient matches the blue/cyan button in the image */
+    background: linear-gradient(to right, #2bcbfb, #4189f3);
+    box-shadow: 0 4px 15px rgba(65, 137, 243, 0.3);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+    color: #333;
+}
+
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #333;
+}
+
+.divider span {
+    padding: 0 10px;
+    font-size: 0.95rem;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-links img {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+/* WELCOME SECTION (RIGHT SIDE WITH CURVE) */
+.welcome-section {
+    flex: 0 0 40%; /* Slightly narrower than the form side */
+    background: linear-gradient(180deg, #00f2ff 0%, #006060 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    position: relative;
+    
+    /* Creating the curve on the LEFT side of this panel */
+    border-top-left-radius: 110px;
+    border-bottom-left-radius: 110px;
+    border-left: 1px solid rgba(0,0,0,0.1);
+}
+
+.welcome-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: normal;
+}
+
+.welcome-content p {
+    font-size: 1rem;
+    margin-bottom: 30px;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.login-toggle-btn {
+    background: linear-gradient(to bottom, #00f2ff, #00a8a8);
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 12px 50px;
+    border-radius: 15px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.login-toggle-btn:hover {
+    transform: scale(1.05);
+}
