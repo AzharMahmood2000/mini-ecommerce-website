@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     closeBtn.addEventListener('click', () => {
         if (confirm('Discard changes?')) {
             console.log('Form closed');
-            // In a real app, this might navigate away or hide a modal
         }
     });
 

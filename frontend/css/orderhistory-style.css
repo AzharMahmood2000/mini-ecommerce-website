@@ -245,11 +245,21 @@ body {
     border-radius: 50%;
 }
 
-.status-shipped { background-color: #ccfbf1; color: #0f766e; }
-.status-shipped::before { background-color: #14b8a6; }
+.status-shipped { 
+    background-color: #ccfbf1; 
+    color: #0f766e;
+ }
+.status-shipped::before {
+     background-color: #14b8a6;
+     }
 
-.status-delivered { background-color: #f1f5f9; color: #475569; }
-.status-delivered::before { background-color: #94a3b8; }
+.status-delivered { 
+    background-color: #f1f5f9; 
+    color: #475569; 
+}
+.status-delivered::before { 
+    background-color: #94a3b8;
+ }
 
 /* Product Icons */
 .product-stack {

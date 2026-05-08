@@ -4,12 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Remove active class from all
             tabButtons.forEach(btn => btn.classList.remove('active'));
             // Add to clicked
             button.classList.add('active');
             
-            // Here you would typically filter data or make an API call
             console.log(`Filtering by: ${button.textContent}`);
         });
     });

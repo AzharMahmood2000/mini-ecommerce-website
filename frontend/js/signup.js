@@ -10,6 +10,5 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.querySelector('.login-toggle-btn');
     loginBtn.addEventListener('click', () => {
         alert('Redirecting to Login Page...');
-        // In a real app, you would use: window.location.href = "login.html";
     });
 });

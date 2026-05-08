@@ -37,3 +37,4 @@ frontend/
 - Open `index.html` to start the app.
 
 Login button: When no user is signed in the navbar shows a Login button that opens the login page; after a successful sign-in the app stores a `currentUser` object in localStorage and shows a profile icon with a small menu (Profile / Logout). Clicking Logout clears `currentUser`, returns the navbar to show Login, and redirects to the landing page.
+when  click a profile button profile page will open.

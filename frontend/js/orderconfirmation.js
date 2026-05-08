@@ -29,6 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Mock functionality: Refresh data if needed
+    // Mock functionality
     console.log('Order #MEH-829472 confirmation page loaded successfully.');
 });

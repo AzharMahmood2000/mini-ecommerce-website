@@ -146,7 +146,7 @@ body {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 25px;
-    margin-top: -30px; /* Overlaps slightly with banner area if needed, but here we place summary bar first */
+    margin-top: -30px; 
     margin-bottom: 60px;
 }
 
