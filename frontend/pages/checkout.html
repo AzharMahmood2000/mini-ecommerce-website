@@ -20,10 +20,10 @@
                 <div class="logo-text">MS <br><span>ELECTRONICS HUB</span></div>
             </div>
             <ul class="nav-links">
-                <li><a href="../index.html">Home</a></li>
+                <li><a href="home.html">Home</a></li>
                 <li><a href="product.html">Product</a></li>
                 <li><a href="cart.html">Cart</a></li>
-                <li><a href="login.html">Login</a></li>
+                <li><a href="#">Login</a></li>
             </ul>
         </div>
     </nav>
@@ -82,13 +82,13 @@
 
             <div class="form-card">
                 <form id="payment-form">
-                    <!-- Payment Method Selection -->
                     <div class="payment-methods">
                         <div class="payment-option">
                             <input type="radio" id="card-payment" name="payment-method" value="card" checked>
                             <label for="card-payment" class="payment-label">
                                 <i class="fas fa-credit-card"></i>
-                                <span>Credit/Debit Card</span>
+                                <span class="payment-title">Credit / Debit Card</span>
+                                <span class="payment-subtext">Pay instantly with Visa or Mastercard</span>
                             </label>
                         </div>
 
@@ -96,7 +96,8 @@
                             <input type="radio" id="cod-payment" name="payment-method" value="cod">
                             <label for="cod-payment" class="payment-label">
                                 <i class="fas fa-money-bill"></i>
-                                <span>Cash on Delivery</span>
+                                <span class="payment-title">Cash on Delivery</span>
+                                <span class="payment-subtext">Pay when your order arrives</span>
                             </label>
                         </div>
 
@@ -104,15 +105,15 @@
                             <input type="radio" id="bank-payment" name="payment-method" value="bank">
                             <label for="bank-payment" class="payment-label">
                                 <i class="fas fa-university"></i>
-                                <span>Bank Transfer</span>
+                                <span class="payment-title">Bank Transfer</span>
+                                <span class="payment-subtext">Transfer to our business account</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Card Details (Visible when card payment selected) -->
                     <div id="card-details" class="payment-details active">
                         <h3>Card Details</h3>
-                        
+
                         <div class="form-group full-width">
                             <label>CARDHOLDER NAME</label>
                             <input type="text" placeholder="JOHN SMITH">
@@ -135,10 +136,8 @@
                         </div>
                     </div>
 
-                    <!-- Bank Transfer Details (Hidden by default) -->
                     <div id="bank-details" class="payment-details">
                         <h3>Bank Transfer Details</h3>
-                        
                         <div class="bank-info">
                             <p><strong>Bank Name:</strong> Central Bank of Sri Lanka</p>
                             <p><strong>Account Number:</strong> 1234567890</p>
@@ -148,7 +147,6 @@
                         </div>
                     </div>
 
-                    <!-- Cash on Delivery (Hidden by default) -->
                     <div id="cod-details" class="payment-details">
                         <div class="cod-info">
                             <i class="fas fa-check-circle"></i>
@@ -221,7 +219,7 @@
                     </div>
                 </div>
 
-                <button class="place-order-btn">
+                <button type="button" class="place-order-btn">
                     PLACE ORDER <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
@@ -229,7 +227,6 @@
 
     </main>
 
-    <script src="../js/navbar.js"></script>
     <script src="../js/checkout.js"></script>
 </body>
 </html>

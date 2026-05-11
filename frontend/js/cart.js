@@ -92,8 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Checkout button
     const checkoutBtn = document.querySelector('.checkout-btn');
     if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-            window.location.href = 'checkout.html';
+        checkoutBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.location.href = './checkout.html';
         });
     }
 });
