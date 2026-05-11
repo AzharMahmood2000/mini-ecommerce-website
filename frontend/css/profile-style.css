@@ -1,3 +1,364 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+:root {
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #f1f5f9;
+    --nav-active-bg: #f8fafc;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --radius-lg: 20px;
+    --radius-md: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.app-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+}
+
+/* Split Layout */
+.sidebar-area {
+    width: 320px;
+    height: 100%;
+    border-right: 1.5px solid #333; /* Dark vertical line as seen in image */
+    display: flex;
+    flex-direction: column;
+    padding: 40px 20px;
+    position: relative;
+    background: #fff;
+}
+
+.main-content-area {
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 80px;
+    background: #fff;
+}
+
+/* Sidebar Card Styling (The floating card inside the sidebar area) */
+.sidebar-card {
+    background: var(--card-bg);
+    width: 100%;
+    border-radius: var(--radius-lg);
+    padding: 25px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: auto;
+}
+
+.user-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.avatar-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #e2e8f0;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-info h3 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.user-info p {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.side-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.nav-item i {
+    width: 20px;
+    height: 20px;
+    color: var(--text-muted);
+}
+
+.nav-item:hover {
+    background: #f1f5f9;
+}
+
+.nav-item.active {
+    background: #f1f5f9;
+    color: var(--text-main);
+}
+
+.nav-item.active i {
+    color: var(--text-main);
+}
+
+.arrow-icon {
+    margin-left: auto;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+/* Separate Logout Button */
+.sidebar-footer {
+    padding: 20px;
+}
+
+.logout-btn-red {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    width: fit-content;
+    transition: background 0.2s;
+}
+
+.logout-btn-red:hover {
+    background: #dc2626;
+}
+
+.logout-btn-red i {
+    width: 18px;
+    height: 18px;
+}
+
+/* Profile Edit Card Styling */
+.profile-edit-card {
+    background: var(--card-bg);
+    flex-grow: 1;
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    box-shadow: var(--shadow);
+    position: relative;
+    max-width: 700px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+
+.header-user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar-edit-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.avatar-large {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.edit-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--border-color);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.edit-btn:hover {
+    transform: scale(1.1);
+}
+
+.edit-btn i {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+}
+
+.user-detail-text h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.user-detail-text p {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.close-btn:hover {
+    background: var(--border-color);
+}
+
+/* Form Styling */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.form-group input {
+    border: none;
+    outline: none;
+    text-align: right;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-family: inherit;
+    width: 60%;
+}
+
+.form-group input::placeholder {
+    color: #cbd5e1;
+}
+
+.form-group input:focus {
+    color: var(--text-main);
+}
+
+.save-btn {
+    align-self: flex-start;
+    margin-top: 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.save-btn:hover {
+    background: var(--primary-hover);
+}
+
+.save-btn:active {
+    transform: scale(0.98);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .app-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .sidebar-card, .profile-edit-card {
+        width: 100%;
+        max-width: 500px;
+    }
+}
+
+@media (max-width: 500px) {
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .form-group input {
+        text-align: left;
+        width: 100%;
+    }
+    
+    .save-btn {
+        width: 100%;
+    }
+}
+=======
+>>>>>>> cf625dc (Resolve merge conflicts: keep HEAD versions)
 :root {
     --primary-color: #3b82f6;
     --primary-hover: #2563eb;
@@ -354,3 +715,7 @@ body {
         width: 100%;
     }
 }
+<<<<<<< HEAD
+=======
+>>>>>>> efb9029 (updated e-commerce styles)
+>>>>>>> cf625dc (Resolve merge conflicts: keep HEAD versions)

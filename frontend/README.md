@@ -8,7 +8,11 @@ frontend/
 ├── README.md
 ├── product.json
 ├── assets/
+<<<<<<< HEAD
 │   ├── images/   # shared image assets used by the app
+=======
+│   ├── images/
+>>>>>>> cf625dc (Resolve merge conflicts: keep HEAD versions)
 │   ├── icons/
 │   └── fonts/
 ├── css/
