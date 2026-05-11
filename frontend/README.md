@@ -8,7 +8,7 @@ frontend/
 ├── README.md
 ├── product.json
 ├── assets/
-│   ├── images/
+│   ├── images/   # shared image assets used by the app
 │   ├── icons/
 │   └── fonts/
 ├── css/

@@ -3,7 +3,7 @@
         "id": 1,
         "name": "Iphone 17 Pro Max",
         "price": "Rs. 300,000",
-        "image": "Images/Apple iPhone 17 Pro max.jpg",
+        "image": "assets/images/Apple iPhone 17 Pro max.jpg",
         "description": "Experience the pinnacle of mobile technology with the iPhone 17 Pro Max. Featuring an advanced titanium design, an ultra-fast next-gen chip, and a revolutionary camera system for professional-grade photography and cinematic video.",
         "page": "home"
     },
@@ -11,7 +11,7 @@
         "id": 2,
         "name": "JBL Party Box 710",
         "price": "Rs. 70,000",
-        "image": "Images/Home/2.png",
+        "image": "assets/images/Home/2.png",
         "description": "Transform any space into a concert hall. This powerful speaker delivers 800 watts of high-performance JBL Original Pro Sound, synchronized with a dynamic, customizable light show that pulses to the beat.",
         "page": "home"
     },
@@ -19,7 +19,7 @@
         "id": 3,
         "name": "Google Pixel 10",
         "price": "Rs. 130,000",
-        "image": "Images/Home/3.png",
+        "image": "assets/images/Home/3.png",
         "description": "The smartest Pixel yet. Google Pixel 10 features an advanced AI-driven Tensor processor, a stunning Actua display, and an industry-leading camera that captures breathtaking detail even in low light.",
         "page": "home"
     },
@@ -27,7 +27,7 @@
         "id": 4,
         "name": "Asus Monitor",
         "price": "Rs. 30,000",
-        "image": "Images/Home/4.png",
+        "image": "assets/images/Home/4.png",
         "description": "Enhance your productivity and gaming experience with this crisp Full HD Asus monitor. Designed with eye-care technology and an ultra-slim profile, it fits perfectly into any minimalist workspace.",
         "page": "home"
     },
@@ -35,7 +35,7 @@
         "id": 5,
         "name": "Sony Headphone",
         "price": "Rs. 9,500",
-        "image": "Images/Home/5.png",
+        "image": "assets/images/Home/5.png",
         "description": "Enjoy pure audio bliss with Sony's signature sound quality. These headphones offer comfortable all-day wear, deep bass, and clear highs, making them the perfect companion for your daily commute.",
         "page": "home"
     },
@@ -43,7 +43,7 @@
         "id": 6,
         "name": "Huawei Tablet",
         "price": "Rs. 25,000",
-        "image": "Images/Home/6.png",
+        "image": "assets/images/Home/6.png",
         "description": "A versatile tablet designed for both work and play. Features a vibrant display, long-lasting battery life, and a lightweight design that makes it easy to carry your entertainment anywhere.",
         "page": "home"
     },
@@ -51,7 +51,7 @@
         "id": 7,
         "name": "Wireless Earbuds Pro",
         "price": "Rs. 19,500",
-        "image": "Images/Home/7.png",
+        "image": "assets/images/Home/7.png",
         "description": "True wireless freedom meets premium sound. These Earbuds Pro feature active noise cancellation, a secure ergonomic fit, and a sleek charging case for extended listening sessions.",
         "page": "home"
     },
@@ -59,7 +59,7 @@
         "id": 8,
         "name": "Foldable RC Drone",
         "price": "Rs. 45,000",
-        "image": "Images/Home/8.png",
+        "image": "assets/images/Home/8.png",
         "description": "Capture the world from above with this portable 4K drone. Featuring a foldable design for easy travel, stable flight controllers, and intelligent GPS return-to-home functionality.",
         "page": "home"
     },
@@ -67,7 +67,7 @@
         "id": 9,
         "name": "Galaxy Watch 6 Ultra",
         "price": "Rs. 125,500",
-        "image": "Images/product/1.png",
+        "image": "assets/images/product/1.png",
         "description": "The ultimate wellness companion. The Galaxy Watch 6 Ultra offers advanced health tracking, including heart rate monitoring, sleep analysis, and high-precision GPS for outdoor adventurers.",
         "page": "product"
     },
@@ -75,7 +75,7 @@
         "id": 10,
         "name": "Surface Laptop 5",
         "price": "Rs. 310,000",
-        "image": "Images/product/2.png",
+        "image": "assets/images/product/2.png",
         "description": "Sophisticated design meets blazing performance. The Surface Laptop 5 features a stunning PixelSense touchscreen, high-speed multitasking capabilities, and an elegant Alcantara or metal finish.",
         "page": "product"
     },
@@ -83,7 +83,7 @@
         "id": 11,
         "name": "Authentics L16 Audio",
         "price": "Rs. 195,000",
-        "image": "Images/product/3.png",
+        "image": "assets/images/product/3.png",
         "description": "A masterpiece of acoustic engineering. This premium wireless speaker system features a retro aesthetic with modern technology, providing room-filling, studio-quality sound with deep clarity.",
         "page": "product"
     },
@@ -91,7 +91,7 @@
         "id": 12,
         "name": "ROG Swift OLED",
         "price": "Rs. 440,000",
-        "image": "Images/product/4.png",
+        "image": "assets/images/product/4.png",
         "description": "The ultimate gaming display. This ROG Swift monitor features an OLED panel for true blacks, incredible brightness, and an ultra-fast refresh rate for a competitive edge in every game.",
         "page": "product"
     },
@@ -99,7 +99,7 @@
         "id": 13,
         "name": "Pixel 8 Pro Slate",
         "price": "Rs. 165,000",
-        "image": "Images/product/5.png",
+        "image": "assets/images/product/5.png",
         "description": "Redefining the smartphone experience. The Pixel 8 Pro Slate features a professional-grade triple camera system, exclusive AI photo editing tools, and a polished, durable matte finish.",
         "page": "product"
     },
@@ -107,7 +107,7 @@
         "id": 14,
         "name": "iphone 15 Pro Max",
         "price": "Rs. 540,000",
-        "image": "Images/product/6.png",
+        "image": "assets/images/product/6.png",
         "description": "A luxury flagship designed for excellence. Featuring the first aerospace-grade titanium design, advanced telephoto zoom, and the powerful A17 Pro chip for unmatched mobile gaming and productivity.",
         "page": "product"
     }
