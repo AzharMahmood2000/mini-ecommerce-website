@@ -1,6 +1,6 @@
 # Mini E-Commerce Frontend
 
-This project is organized so only `index.html` and `README.md` stay at the root.
+This project keeps the shared image assets in `frontend/assets/images/` and uses the root `index.html` as the landing page.
 
 ```text
 frontend/
@@ -8,11 +8,7 @@ frontend/
 ├── README.md
 ├── product.json
 ├── assets/
-<<<<<<< HEAD
-│   ├── images/   # shared image assets used by the app
-=======
 │   ├── images/
->>>>>>> cf625dc (Resolve merge conflicts: keep HEAD versions)
 │   ├── icons/
 │   └── fonts/
 ├── css/
@@ -39,6 +35,6 @@ frontend/
 
 ## Notes
 - Open `index.html` to start the app.
-
-Login button: When no user is signed in the navbar shows a Login button that opens the login page; after a successful sign-in the app stores a `currentUser` object in localStorage and shows a profile icon with a small menu (Profile / Logout). Clicking Logout clears `currentUser`, returns the navbar to show Login, and redirects to the landing page.
-when  click a profile button profile page will open.
+- The navbar shows a Login button when no user is signed in.
+- After sign-in, the app stores `currentUser` in localStorage and shows a profile icon with a small menu.
+- Clicking Logout clears `currentUser`, returns the Login button, and redirects to the landing page.
