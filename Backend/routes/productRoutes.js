@@ -9,7 +9,7 @@ const {
 
 const router = express.Router();
 
-console.log('🔧 Setting up Product routes...');
+console.log(' Setting up Product routes...');
 
 // POST /api/products - Create a new product
 router.post('/', createProduct);
