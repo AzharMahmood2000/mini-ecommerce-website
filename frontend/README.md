@@ -34,6 +34,7 @@ frontend/
 ```
 
 ## Notes
+
 - Open `index.html` to start the app.
 - The navbar shows a Login button when no user is signed in.
 - After sign-in, the app stores `currentUser` in localStorage and shows a profile icon with a small menu.
