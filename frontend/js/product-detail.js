@@ -26,8 +26,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (productPrice) {
             productPrice.textContent = 'PRICE: ' + currentProduct.price;
         }
+    } else {
+        const productImage = document.querySelector('.product-image-box img');
+        const productTitle = document.getElementById('detail-title');
+        const productDesc = document.getElementById('detail-desc');
+        const productPrice = document.getElementById('detail-price');
 
-        localStorage.removeItem('selectedProduct');
+        if (productImage && productTitle && productDesc && productPrice) {
+            const pageProduct = {
+                id: productTitle.textContent.trim().toLowerCase(),
+                name: productTitle.textContent.trim(),
+                price: productPrice.textContent.replace('PRICE:', '').trim(),
+                image: productImage.src,
+                description: productDesc.textContent.trim(),
+            };
+
+            currentProduct = pageProduct;
+        }
     }
 
     const qtyPlusBtn = document.getElementById('qty-plus');
