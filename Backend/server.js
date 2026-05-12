@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const Product = require('./models/Product');
 const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 // Load .env file
 dotenv.config();
@@ -27,6 +28,36 @@ app.get('/', (req, res) => {
 
 // User routes
 app.use('/api/users', userRoutes);
+console.log('✅ User routes loaded: /api/users');
+
+// Product routes
+app.use('/api/products', productRoutes);
+console.log('✅ Product routes loaded: /api/products');
+
+// Simple test POST endpoint
+app.post('/test-api', (req, res) => {
+  console.log('✅ TEST POST endpoint received request');
+  res.json({ success: true, message: 'Test POST works!' });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('🔴 ERROR:', err.message);
+  console.error('🔴 Stack:', err.stack);
+  res.status(500).json({
+    success: false,
+    error: err.message,
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  console.log('⚠️ 404 - Route not found:', req.method, req.path);
+  res.status(404).json({
+    success: false,
+    message: `Cannot ${req.method} ${req.path}`,
+  });
+});
 
 // Function to insert sample data
 const insertSampleData = async () => {
@@ -44,7 +75,7 @@ const insertSampleData = async () => {
       name: 'iPhone 17 Pro Max',
       price: 300000,
       description: 'Experience the pinnacle of mobile technology with the iPhone 17 Pro Max. Featuring an advanced titanium design, ultra-fast processing speeds, and a stunning triple-lens camera system.',
-      category: 'Mobile Phones',
+      category: 'Electronics',
       stock: 50,
     });
 
@@ -56,6 +87,25 @@ const insertSampleData = async () => {
   }
 };
 
+// Remove old product indexes that no longer match the schema
+const removeLegacyProductIndexes = async () => {
+  try {
+    const indexes = await Product.collection.indexes();
+    const hasSkuIndex = indexes.some((index) => index.name === 'sku_1');
+
+    if (hasSkuIndex) {
+      await Product.collection.dropIndex('sku_1');
+      console.log('Removed legacy sku_1 index from products collection.');
+    }
+  } catch (error) {
+    if (error.codeName === 'IndexNotFound' || /index not found/i.test(error.message)) {
+      return;
+    }
+
+    console.error('Error removing legacy product indexes:', error.message);
+  }
+};
+
 // Server start
 const PORT = process.env.PORT || 5000;
 const startServer = async () => {
@@ -64,6 +114,8 @@ const startServer = async () => {
 
     console.log('Connected database:', mongoose.connection.name);
     console.log('Connected host:', mongoose.connection.host);
+
+    await removeLegacyProductIndexes();
 
     // Insert sample data after connection
     await insertSampleData();
