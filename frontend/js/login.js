@@ -24,27 +24,57 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle login form submission
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             // Fetch values
-            const username = loginForm.querySelector('input[type="text"]').value;
+            const emailOrUsername = loginForm.querySelector('input[type="text"]').value.trim();
             const password = loginForm.querySelector('input[type="password"]').value;
 
-            if(username && password) {
-                // Save user data to localStorage
+            if (!emailOrUsername || !password) {
+                alert('Please enter your email/username and password.');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        emailOrUsername,
+                        password,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.message || 'Login failed.');
+                    return;
+                }
+
                 const userData = {
-                    username: username,
-                    loginTime: new Date().toISOString()
+                    id: data.user.id,
+                    username: data.user.username,
+                    email: data.user.email,
+                    role: data.user.role,
+                    loginTime: new Date().toISOString(),
                 };
+
                 localStorage.setItem('currentUser', JSON.stringify(userData));
-                
-                alert('Logging in with: ' + username);
-                
-                // Redirect to home page after login
+                if (data.token) {
+                    localStorage.setItem('authToken', data.token);
+                }
+                alert(data.message || 'Login successful.');
+
                 setTimeout(() => {
                     window.location.href = '../index.html';
                 }, 500);
+            } catch (error) {
+                console.error('Login request failed:', error);
+                alert('Could not connect to the server. Please try again.');
             }
         });
     }
@@ -52,16 +82,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle registration form submission
     const regForm = document.getElementById('registrationForm');
     if (regForm) {
-        regForm.addEventListener('submit', (e) => {
+        regForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Get form values
-            const regUsername = regForm.querySelector('input[type="text"]').value;
-            const regPassword = regForm.querySelector('input[type="password"]').value;
-            
-            if(regUsername && regPassword) {
-                alert('Registration Successful! Please login with your credentials.');
+
+            const usernameInput = regForm.querySelector('input[type="text"]');
+            const emailInput = regForm.querySelector('input[type="email"]');
+            const passwordInput = regForm.querySelector('input[type="password"]');
+
+            const username = usernameInput ? usernameInput.value.trim() : '';
+            const email = emailInput ? emailInput.value.trim() : '';
+            const password = passwordInput ? passwordInput.value : '';
+
+            if (!username || !email || !password) {
+                alert('Please fill in username, email, and password.');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:5000/api/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username,
+                        email,
+                        password,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.message || 'Registration failed.');
+                    return;
+                }
+
+                alert(data.message || 'Registration successful! Please login with your credentials.');
+                regForm.reset();
                 switchToLogin();
+            } catch (error) {
+                console.error('Registration request failed:', error);
+                alert('Could not connect to the server. Please try again.');
             }
         });
     }
