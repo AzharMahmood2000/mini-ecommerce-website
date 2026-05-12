@@ -28,22 +28,22 @@ app.get('/', (req, res) => {
 
 // User routes
 app.use('/api/users', userRoutes);
-console.log('✅ User routes loaded: /api/users');
+console.log(' User routes loaded: /api/users');
 
 // Product routes
 app.use('/api/products', productRoutes);
-console.log('✅ Product routes loaded: /api/products');
+console.log(' Product routes loaded: /api/products');
 
 // Simple test POST endpoint
 app.post('/test-api', (req, res) => {
-  console.log('✅ TEST POST endpoint received request');
+  console.log(' TEST POST endpoint received request');
   res.json({ success: true, message: 'Test POST works!' });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('🔴 ERROR:', err.message);
-  console.error('🔴 Stack:', err.stack);
+  console.error(' ERROR:', err.message);
+  console.error(' Stack:', err.stack);
   res.status(500).json({
     success: false,
     error: err.message,
@@ -52,7 +52,7 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use((req, res) => {
-  console.log('⚠️ 404 - Route not found:', req.method, req.path);
+  console.log(' 404 - Route not found:', req.method, req.path);
   res.status(404).json({
     success: false,
     message: `Cannot ${req.method} ${req.path}`,
