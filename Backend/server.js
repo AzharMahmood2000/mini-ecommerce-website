@@ -75,7 +75,7 @@ const insertSampleData = async () => {
       name: 'iPhone 17 Pro Max',
       price: 300000,
       description: 'Experience the pinnacle of mobile technology with the iPhone 17 Pro Max. Featuring an advanced titanium design, ultra-fast processing speeds, and a stunning triple-lens camera system.',
-      category: 'Electronics',
+      category: 'Mobile Devices',
       stock: 50,
     });
 

@@ -6,29 +6,24 @@ const {
   updateProduct,
   deleteProduct,
 } = require('../controllers/productController');
+const { protect } = require('../middleware/authMiddleware');
+const { requireAdmin } = require('../middleware/adminMiddleware');
 
 const router = express.Router();
 
-console.log(' Setting up Product routes...');
-
-// POST /api/products - Create a new product
-router.post('/', createProduct);
-console.log(' POST / route registered');
-
-// GET /api/products - Get all products with optional filters
+// GET /api/products - Get all products (optional: filter by category, sort, pagination)
 router.get('/', getAllProducts);
-console.log(' GET / route registered');
 
-// GET /api/products/:id - Get a specific product by ID
+// GET /api/products/:id - Get a single product by ID
 router.get('/:id', getProductById);
-console.log(' GET /:id route registered');
 
-// PUT /api/products/:id - Update a product
-router.put('/:id', updateProduct);
-console.log(' PUT /:id route registered');
+// POST /api/products - Create a new product (admin only)
+router.post('/', protect, requireAdmin, createProduct);
 
-// DELETE /api/products/:id - Delete a product
-router.delete('/:id', deleteProduct);
-console.log(' DELETE /:id route registered');
+// PUT /api/products/:id - Update a product (admin only)
+router.put('/:id', protect, requireAdmin, updateProduct);
+
+// DELETE /api/products/:id - Delete a product (admin only)
+router.delete('/:id', protect, requireAdmin, deleteProduct);
 
 module.exports = router;

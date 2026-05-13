@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Iphone 17 Pro Max",
-    "category": "Mobile",
+    "category": "Mobile Devices",
     "price": 300000,
     "image": "assets/images/Apple iPhone 17 Pro max.jpg",
     "description": "Experience the pinnacle of mobile technology with the iPhone 17 Pro Max. Featuring an advanced titanium design, an ultra-fast next-gen chip, and a revolutionary camera system for professional-grade photography and cinematic video.",
@@ -11,7 +11,7 @@
   {
     "id": 2,
     "name": "JBL Party Box 710",
-    "category": "Audio",
+    "category": "Audio Systems",
     "price": 70000,
     "image": "assets/images/Home/2.png",
     "description": "Transform any space into a concert hall. This powerful speaker delivers 800 watts of high-performance JBL Original Pro Sound, synchronized with a dynamic, customizable light show that pulses to the beat.",
@@ -20,7 +20,7 @@
   {
     "id": 3,
     "name": "Google Pixel 10",
-    "category": "Mobile",
+    "category": "Mobile Devices",
     "price": 130000,
     "image": "assets/images/Home/3.png",
     "description": "The smartest Pixel yet. Google Pixel 10 features an advanced AI-driven Tensor processor, a stunning Actua display, and an industry-leading camera that captures breathtaking detail even in low light.",
@@ -29,7 +29,7 @@
   {
     "id": 4,
     "name": "Asus Monitor",
-    "category": "Information System",
+    "category": "Information Systems",
     "price": 30000,
     "image": "assets/images/Home/4.png",
     "description": "Enhance your productivity and gaming experience with this crisp Full HD Asus monitor. Designed with eye-care technology and an ultra-slim profile, it fits perfectly into any minimalist workspace.",
@@ -38,7 +38,7 @@
   {
     "id": 5,
     "name": "Sony Headphone",
-    "category": "Audio",
+    "category": "Audio Systems",
     "price": 9500,
     "image": "assets/images/Home/5.png",
     "description": "Enjoy pure audio bliss with Sony's signature sound quality. These headphones offer comfortable all-day wear, deep bass, and clear highs, making them the perfect companion for your daily commute.",
@@ -47,7 +47,7 @@
   {
     "id": 6,
     "name": "Huawei Tablet",
-    "category": "Mobile",
+    "category": "Mobile Devices",
     "price": 25000,
     "image": "assets/images/Home/6.png",
     "description": "A versatile tablet designed for both work and play. Features a vibrant display, long-lasting battery life, and a lightweight design that makes it easy to carry your entertainment anywhere.",
@@ -56,7 +56,7 @@
   {
     "id": 7,
     "name": "Wireless Earbuds Pro",
-    "category": "Audio",
+    "category": "Audio Systems",
     "price": 19500,
     "image": "assets/images/Home/7.png",
     "description": "True wireless freedom meets premium sound. These Earbuds Pro feature active noise cancellation, a secure ergonomic fit, and a sleek charging case for extended listening sessions.",
@@ -65,7 +65,7 @@
   {
     "id": 8,
     "name": "Foldable RC Drone",
-    "category": "Information System",
+    "category": "Information Systems",
     "price": 45000,
     "image": "assets/images/Home/8.png",
     "description": "Capture the world from above with this portable 4K drone. Featuring a foldable design for easy travel, stable flight controllers, and intelligent GPS return-to-home functionality.",
@@ -74,7 +74,7 @@
   {
     "id": 9,
     "name": "Galaxy Watch 6 Ultra",
-    "category": "Mobile",
+    "category": "Mobile Devices",
     "price": 125500,
     "image": "assets/images/product/1.png",
     "description": "The ultimate wellness companion. The Galaxy Watch 6 Ultra offers advanced health tracking, including heart rate monitoring, sleep analysis, and high-precision GPS for outdoor adventurers.",
@@ -83,7 +83,7 @@
   {
     "id": 10,
     "name": "Surface Laptop 5",
-    "category": "Information System",
+    "category": "Information Systems",
     "price": 310000,
     "image": "assets/images/product/2.png",
     "description": "Sophisticated design meets blazing performance. The Surface Laptop 5 features a stunning PixelSense touchscreen, high-speed multitasking capabilities, and an elegant Alcantara or metal finish.",
@@ -92,7 +92,7 @@
   {
     "id": 11,
     "name": "Authentics L16 Audio",
-    "category": "Audio",
+    "category": "Audio Systems",
     "price": 195000,
     "image": "assets/images/product/3.png",
     "description": "A masterpiece of acoustic engineering. This premium wireless speaker system features a retro aesthetic with modern technology, providing room-filling, studio-quality sound with deep clarity.",
@@ -101,7 +101,7 @@
   {
     "id": 12,
     "name": "ROG Swift OLED",
-    "category": "Mobile Gaming",
+    "category": "Gaming",
     "price": 440000,
     "image": "assets/images/product/4.png",
     "description": "The ultimate gaming display. This ROG Swift monitor features an OLED panel for true blacks, incredible brightness, and an ultra-fast refresh rate for a competitive edge in every game.",
@@ -110,7 +110,7 @@
   {
     "id": 13,
     "name": "Pixel 8 Pro Slate",
-    "category": "Mobile",
+    "category": "Mobile Devices",
     "price": 165000,
     "image": "assets/images/product/5.png",
     "description": "Redefining the smartphone experience. The Pixel 8 Pro Slate features a professional-grade triple camera system, exclusive AI photo editing tools, and a polished, durable matte finish.",
@@ -119,7 +119,7 @@
   {
     "id": 14,
     "name": "iphone 15 Pro Max",
-    "category": "Mobile",
+    "category": "Mobile Devices",
     "price": 540000,
     "image": "assets/images/product/6.png",
     "description": "A luxury flagship designed for excellence. Featuring the first aerospace-grade titanium design, advanced telephoto zoom, and the powerful A17 Pro chip for unmatched mobile gaming and productivity.",

@@ -36,7 +36,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
       maxlength: [50, 'Category cannot exceed 50 characters'],
       required: [true, 'Category is required'],
-      enum: ['Electronics', 'Clothing', 'Books', 'Home', 'Sports', 'Other'],
+      enum: ['Mobile Devices', 'Audio Systems', 'Information Systems', 'Gaming'],
     },
     stock: {
       type: Number,

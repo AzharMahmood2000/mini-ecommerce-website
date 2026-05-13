@@ -1,119 +1,132 @@
 const Product = require('../models/Product');
+const mongoose = require('mongoose');
 
-const generateSku = () => {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const randomPart = Math.random().toString(36).slice(2, 8).toUpperCase();
-  return `SKU-${timestamp}-${randomPart}`;
-};
-
-const normalizeSku = (value) => {
-  if (typeof value !== 'string') {
-    return undefined;
-  }
-
-  const trimmed = value.trim();
-  return trimmed ? trimmed : undefined;
-};
-
-// Create a new product
+// Create a new product (admin only)
 const createProduct = async (req, res) => {
   try {
-    console.log(' [CREATE PRODUCT] Request received');
-    console.log(' Content-Type:', req.headers['content-type']);
-    console.log(' Body:', req.body);
+    const { name, price, discountPrice, category, stock, description, imageUrl, brand } = req.body;
 
-    const {
-      name,
-      description,
-      price,
-      discountPrice,
-      category,
-      stock,
-      imageUrl,
-      imageUrls,
-      brand,
-      sku,
-      tags,
-    } = req.body;
-
+    // Validate required fields
     if (!name || !price || !category || stock === undefined) {
       return res.status(400).json({
         success: false,
-        message: 'name, price, category, and stock are required.',
+        message: 'Please provide all required fields: name, price, category, stock',
       });
     }
 
-    const normalizedSku = normalizeSku(sku) || generateSku();
-
-    const existingSkuProduct = await Product.findOne({ sku: normalizedSku });
-
-    if (existingSkuProduct) {
+    // Validate numeric fields
+    if (typeof price !== 'number' || price < 0) {
       return res.status(400).json({
         success: false,
-        message: 'SKU already exists. Please use a different SKU.',
+        message: 'Price must be a positive number',
+      });
+    }
+
+    if (typeof stock !== 'number' || stock < 0 || !Number.isInteger(stock)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Stock must be a positive integer',
+      });
+    }
+
+    if (discountPrice && (typeof discountPrice !== 'number' || discountPrice > price)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Discount price must be less than price',
       });
     }
 
     const newProduct = await Product.create({
       name,
-      description: description || '',
       price,
       discountPrice: discountPrice || null,
       category,
       stock,
+      description: description || '',
       imageUrl: imageUrl || '',
-      imageUrls: imageUrls || [],
       brand: brand || '',
-      sku: normalizedSku,
-      tags: tags || [],
     });
-
-    console.log('Product created successfully with id:', newProduct._id);
 
     return res.status(201).json({
       success: true,
-      message: 'Product created successfully.',
+      message: 'Product created successfully',
       product: newProduct,
     });
   } catch (error) {
     console.error('Create product error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Something went wrong while creating the product.',
+      message: error.message || 'Failed to create product',
     });
   }
 };
 
-// Get all products with filters
+// Get all products with optional filters, sorting, and pagination
 const getAllProducts = async (req, res) => {
   try {
-    const { category, brand, minPrice, maxPrice, isActive, isFeatured } = req.query;
+    const { category, sort, page, limit } = req.query;
 
     const filter = {};
-
     if (category) filter.category = category;
-    if (brand) filter.brand = brand;
-    if (isActive !== undefined) filter.isActive = isActive === 'true';
-    if (isFeatured !== undefined) filter.isFeatured = isFeatured === 'true';
 
-    if (minPrice || maxPrice) {
-      filter.price = {};
-      if (minPrice) filter.price.$gte = parseInt(minPrice);
-      if (maxPrice) filter.price.$lte = parseInt(maxPrice);
+    // Determine sort order
+    let sortObj = { createdAt: -1 }; // default: newest first
+    if (sort) {
+      switch (sort.toLowerCase()) {
+        case 'price_asc':
+          sortObj = { price: 1 };
+          break;
+        case 'price_desc':
+          sortObj = { price: -1 };
+          break;
+        case 'newest':
+          sortObj = { createdAt: -1 };
+          break;
+        case 'oldest':
+          sortObj = { createdAt: 1 };
+          break;
+        default:
+          sortObj = { createdAt: -1 };
+      }
     }
 
-    const products = await Product.find(filter).sort({ createdAt: -1 });
+    let products = [];
+    let totalProducts = 0;
+    let currentPage = 1;
+    let totalPages = 1;
+
+    // Check if pagination is requested
+    if (page || limit) {
+      currentPage = Math.max(parseInt(page) || 1, 1);
+      const perPage = Math.max(parseInt(limit) || 6, 1);
+      const skip = (currentPage - 1) * perPage;
+
+      totalProducts = await Product.countDocuments(filter);
+      totalPages = Math.ceil(totalProducts / perPage);
+
+      products = await Product.find(filter)
+        .sort(sortObj)
+        .skip(skip)
+        .limit(perPage);
+    } else {
+      // Return all products without pagination
+      products = await Product.find(filter).sort(sortObj);
+      totalProducts = products.length;
+    }
 
     return res.status(200).json({
       success: true,
       count: products.length,
+      totalProducts,
+      currentPage: page ? currentPage : 1,
+      totalPages: page ? totalPages : 1,
       products,
     });
   } catch (error) {
-    console.error('Get products error:', error.message);
+    console.error('Get all products error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Could not fetch products.',
+      message: error.message || 'Failed to fetch products',
     });
   }
 };
@@ -123,12 +136,19 @@ const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID format',
+      });
+    }
+
     const product = await Product.findById(id);
 
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found.',
+        message: 'Product not found',
       });
     }
 
@@ -140,92 +160,93 @@ const getProductById = async (req, res) => {
     console.error('Get product error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Could not fetch product.',
+      message: error.message || 'Failed to fetch product',
     });
   }
 };
 
-// Update a product
+// Update a product (admin only)
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = { ...req.body };
 
-    if ('sku' in updates) {
-      const normalizedSku = normalizeSku(updates.sku);
-
-      if (!normalizedSku) {
-        delete updates.sku;
-      } else {
-        const skuConflict = await Product.findOne({
-          sku: normalizedSku,
-          _id: { $ne: id },
-        });
-
-        if (skuConflict) {
-          return res.status(400).json({
-            success: false,
-            message: 'SKU already exists. Please use a different SKU.',
-          });
-        }
-
-        updates.sku = normalizedSku;
-      }
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID format',
+      });
     }
 
-    const product = await Product.findByIdAndUpdate(id, updates, {
-      new: true,
-      runValidators: true,
+    const allowedFields = ['name', 'price', 'discountPrice', 'description', 'category', 'stock', 'imageUrl', 'brand'];
+    const updates = {};
+
+    allowedFields.forEach((field) => {
+      if (req.body.hasOwnProperty(field)) {
+        updates[field] = req.body[field];
+      }
     });
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No valid fields provided for update',
+      });
+    }
+
+    const product = await Product.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
 
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found.',
+        message: 'Product not found',
       });
     }
 
-    console.log('Product updated successfully with id:', product._id);
-
     return res.status(200).json({
       success: true,
-      message: 'Product updated successfully.',
+      message: 'Product updated successfully',
       product,
     });
   } catch (error) {
     console.error('Update product error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Could not update product.',
+      message: error.message || 'Failed to update product',
     });
   }
 };
 
-// Delete a product
+// Delete a product (admin only)
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid product ID format',
+      });
+    }
 
     const product = await Product.findByIdAndDelete(id);
 
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found.',
+        message: 'Product not found',
       });
     }
 
-    console.log('Product deleted successfully with id:', product._id);
-
     return res.status(200).json({
       success: true,
-      message: 'Product deleted successfully.',
+      message: 'Product deleted successfully',
+      product,
     });
   } catch (error) {
     console.error('Delete product error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Could not delete product.',
+      message: error.message || 'Failed to delete product',
     });
   }
 };

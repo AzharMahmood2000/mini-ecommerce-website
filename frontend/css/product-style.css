@@ -242,26 +242,33 @@
 .pd-img-container {
     background: #f8fafc;
     border-radius: 6px;
-    height: 250px;
+    height: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 18px;
     overflow: hidden;
 }
 
 .pd-img-container img {
-    max-width: 80%;
-    max-height: 80%;
+    max-width: 72%;
+    max-height: 72%;
     object-fit: contain;
     mix-blend-mode: multiply;
+}
+
+.pd-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .pd-info h3 {
     font-size: 15px;
     font-weight: 700;
     color: #1e293b;
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    line-height: 1.35;
 }
 
 .pd-info .price {
@@ -269,8 +276,23 @@
     font-weight: 600;
     color: #0ea5e9;
     font-family: 'Space Mono', 'Inter', monospace;
-    margin-bottom: 20px;
+    margin-bottom: 4px;
     letter-spacing: 0.5px;
+}
+
+.pd-info .category,
+.pd-info .stock {
+    margin: 0;
+    line-height: 1.4;
+    color: #64748b;
+}
+
+.pd-info .stock {
+    font-size: 12px;
+}
+
+.pd-view-btn {
+    margin-top: 6px;
 }
 
 .pd-view-btn {
@@ -317,6 +339,12 @@
 
 .page-btn:hover {
     border-color: #0a6b9a;
+}
+
+.page-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .page-btn.active {

@@ -6,18 +6,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const maxPriceInput = document.getElementById('max-price');
     const minPriceDisplay = document.getElementById('min-price-display');
     const maxPriceDisplay = document.getElementById('max-price-display');
+    const paginationContainer = document.querySelector('.pagination');
 
     if (!pdGrid) return;
 
-    const productDataUrl = '../product.json';
-    let allProducts = [];
+    const productsApiUrl = 'http://localhost:5000/api/products';
+    const productsPerPage = 6;
+    const staticCategories = ['Mobile Devices', 'Audio Systems', 'Information Systems', 'Gaming'];
+
+    let products = [];
+    let currentPage = 1;
+    let totalPages = 1;
     let activeCategory = 'all';
-    let activeSort = 'relevant';
     let minPrice = 0;
     let maxPrice = 1000000;
+    let activeSort = 'relevant';
+
+    const sortOptions = [
+        { value: 'relevant', label: 'Relevant' },
+        { value: 'newest', label: 'Newest' },
+        { value: 'price_asc', label: 'Price: Low to High' },
+        { value: 'price_desc', label: 'Price: High to Low' },
+    ];
 
     const normalizeImagePath = (imagePath) => {
-        if (!imagePath) return '';
+        if (!imagePath) return '../assets/images/Home/1.png';
         if (/^(https?:)?\/\//.test(imagePath) || imagePath.startsWith('../')) {
             return imagePath;
         }
@@ -30,62 +43,39 @@ document.addEventListener('DOMContentLoaded', () => {
         return Number.isNaN(parsed) ? 0 : parsed;
     };
 
-    const formatCategoryLabel = (category) => {
-        return category
-            .replace(/[-_]/g, ' ')
-            .replace(/\b\w/g, (char) => char.toUpperCase());
-    };
-
     const getCategoryIcon = (category) => {
-        const normalized = category.toLowerCase();
-
+        const normalized = String(category || '').toLowerCase();
         if (normalized.includes('mobile')) return 'fas fa-mobile-alt';
-        if (normalized.includes('audio') || normalized.includes('headphone')) return 'fas fa-headphones-alt';
+        if (normalized.includes('audio')) return 'fas fa-headphones-alt';
         if (normalized.includes('gaming')) return 'fas fa-gamepad';
-        if (normalized.includes('information') || normalized.includes('computer') || normalized.includes('laptop')) return 'fas fa-laptop';
+        if (normalized.includes('information')) return 'fas fa-laptop';
         return 'fas fa-desktop';
     };
 
-    const introHTML = `
-        <div class="intro-block">
-            <h2>Technical Excellence</h2>
-            <p>Browse our curated selection of high-performance consumer electronics. Engineered for precision and reliability.</p>
-        </div>
-    `;
+    const mapApiProduct = (product) => {
+        const imageFromArray = Array.isArray(product.imageUrls) && product.imageUrls.length > 0
+            ? product.imageUrls[0]
+            : '';
 
-    const generateSortHTML = () => `
-        <div class="pd-sort-card">
-            <div class="sort-container">
-                <span class="sort-label">SORT BY:</span>
-                <div class="sort-dropdown" id="sort-dropdown">
-                    <span class="selected-sort" id="current-sort">MOST RELEVANT</span>
-                    <i class="fas fa-chevron-down"></i>
-                    <ul class="sort-options" id="sort-options">
-                        <li data-sort="relevant">Most Relevant</li>
-                        <li data-sort="newest">Newest</li>
-                        <li data-sort="low">Price: Low to High</li>
-                        <li data-sort="high">Price: High to Low</li>
-                        <li data-sort="rated">Best Rated</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    `;
+        return {
+            id: product._id || String(product.id || ''),
+            name: product.name || 'Unnamed Product',
+            price: extractPrice(product.price),
+            category: product.category || 'Other',
+            stock: typeof product.stock === 'number' ? product.stock : 0,
+            image: product.imageUrl || imageFromArray || '',
+            description: product.description || '',
+        };
+    };
 
     const renderCategoryList = () => {
         if (!categoryList) return;
 
-        const productCategories = [...new Set(
-            allProducts
-                .filter((product) => product.page === 'product')
-                .map((product) => product.category)
-        )];
-
         categoryList.innerHTML = [
             `<li class="${activeCategory === 'all' ? 'active' : ''}" data-category="all"><i class="fas fa-desktop"></i> ALL PRODUCTS</li>`,
-            ...productCategories.map((category) => `
+            ...staticCategories.map((category) => `
                 <li class="${activeCategory === category ? 'active' : ''}" data-category="${category}">
-                    <i class="${getCategoryIcon(category)}"></i> ${formatCategoryLabel(category)}
+                    <i class="${getCategoryIcon(category)}"></i> ${category}
                 </li>
             `),
         ].join('');
@@ -93,84 +83,190 @@ document.addEventListener('DOMContentLoaded', () => {
         categoryList.querySelectorAll('li').forEach((item) => {
             item.addEventListener('click', () => {
                 activeCategory = item.dataset.category;
+                currentPage = 1;
 
                 categoryList.querySelectorAll('li').forEach((li) => li.classList.remove('active'));
                 item.classList.add('active');
 
-                renderProducts();
+                fetchProducts(currentPage);
             });
         });
     };
 
     const renderProducts = () => {
-        let filteredProducts = allProducts.filter((product) => {
-            const matchesPage = product.page === 'product';
-            const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
-            const priceValue = extractPrice(product.price);
-            const matchesPrice = priceValue >= minPrice && priceValue <= maxPrice;
-
-            return matchesPage && matchesCategory && matchesPrice;
-        });
-
-        if (activeSort === 'low') {
-            filteredProducts.sort((a, b) => extractPrice(a.price) - extractPrice(b.price));
-        } else if (activeSort === 'high') {
-            filteredProducts.sort((a, b) => extractPrice(b.price) - extractPrice(a.price));
-        } else if (activeSort === 'newest') {
-            filteredProducts.sort((a, b) => b.id - a.id);
-        } else if (activeSort === 'rated') {
-            filteredProducts.sort((a, b) => b.id - a.id);
+        if (!products.length) {
+            pdGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">No products found.</p>';
+            return;
         }
 
-        let cardsHTML = '';
+        // Render heading + sort + products
+        let html = '';
 
-        filteredProducts.forEach((product) => {
-            cardsHTML += `
-                <div class="pd-card" data-product-id="${product.id}">
-                    <div class="pd-img-container">
-                        <img src="${normalizeImagePath(product.image)}" alt="${product.name}">
-                    </div>
-                    <div class="pd-info">
-                        <h3>${product.name}</h3>
-                        <p class="price">Rs ${product.price}</p>
-                        <button class="pd-view-btn">VIEW PRODUCT</button>
+        // Render intro block (heading section)
+        html += `
+            <div class="intro-block">
+                <h2>Technical Excellence</h2>
+                <p>Discover our curated collection of premium electronics and gadgets. Quality products at unbeatable prices.</p>
+            </div>
+        `;
+
+        // Render sort dropdown section
+        html += `
+            <div class="pd-sort-card">
+                <div class="sort-container">
+                    <span class="sort-label">Sort By:</span>
+                    <div class="sort-dropdown" id="sort-dropdown">
+                        <span class="selected-sort" id="selected-sort-text">Relevant</span>
+                        <i class="fas fa-chevron-down"></i>
+                        <ul class="sort-options" id="sort-options-list">
+                            ${sortOptions.map(option => `
+                                <li data-sort="${option.value}" ${option.value === activeSort ? 'class="active"' : ''}>
+                                    ${option.label}
+                                </li>
+                            `).join('')}
+                        </ul>
                     </div>
                 </div>
-            `;
-        });
+            </div>
+        `;
 
-        if (filteredProducts.length === 0) {
-            cardsHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">No products found for this filter</p>';
-        }
+        // Render product cards
+        html += products.map((product) => `
+            <div class="pd-card" data-product-id="${product.id}">
+                <div class="pd-img-container">
+                    <img src="${normalizeImagePath(product.image)}" alt="${product.name}">
+                </div>
+                <div class="pd-info">
+                    <h3>${product.name}</h3>
+                    <p class="category">${product.category}</p>
+                    <p class="price">Rs ${product.price.toLocaleString()}</p>
+                    <p class="stock">Stock: ${product.stock}</p>
+                    <button class="pd-view-btn">VIEW PRODUCT</button>
+                </div>
+            </div>
+        `).join('');
 
-        pdGrid.innerHTML = introHTML + generateSortHTML() + cardsHTML;
-        setupSortListeners();
+        pdGrid.innerHTML = html;
+
+        // Attach event listeners for sort dropdown
+        setupSortDropdown();
     };
 
-    const setupSortListeners = () => {
-        const dropdown = document.getElementById('sort-dropdown');
-        const optionsMenu = document.getElementById('sort-options');
-        const currentSortText = document.getElementById('current-sort');
+    const renderPagination = () => {
+        if (!paginationContainer) return;
 
-        if (!dropdown || !optionsMenu || !currentSortText) return;
+        const buttons = [];
 
-        dropdown.addEventListener('click', (e) => {
-            e.stopPropagation();
-            optionsMenu.classList.toggle('show');
+        buttons.push(`
+            <button class="page-btn" data-page="prev" ${currentPage <= 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        `);
+
+        for (let i = 1; i <= totalPages; i += 1) {
+            buttons.push(`
+                <button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>
+            `);
+        }
+
+        buttons.push(`
+            <button class="page-btn" data-page="next" ${currentPage >= totalPages ? 'disabled' : ''}>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        `);
+
+        paginationContainer.innerHTML = buttons.join('');
+    };
+
+    const buildQueryParams = (pageNumber) => {
+        const params = new URLSearchParams();
+        params.set('page', String(pageNumber));
+        params.set('limit', String(productsPerPage));
+
+        if (activeCategory !== 'all') {
+            params.set('category', activeCategory);
+        }
+
+        params.set('minPrice', String(minPrice));
+        params.set('maxPrice', String(maxPrice));
+
+        // Include sort parameter
+        if (activeSort && activeSort !== 'relevant') {
+            params.set('sort', activeSort);
+        }
+
+        return params.toString();
+    };
+
+    const setupSortDropdown = () => {
+        const sortDropdown = document.getElementById('sort-dropdown');
+        const sortOptionsList = document.getElementById('sort-options-list');
+        const selectedSortText = document.getElementById('selected-sort-text');
+
+        if (!sortDropdown || !sortOptionsList) return;
+
+        // Toggle dropdown visibility
+        sortDropdown.addEventListener('click', () => {
+            sortOptionsList.classList.toggle('show');
         });
 
-        document.addEventListener('click', () => {
-            optionsMenu.classList.remove('show');
-        });
+        // Handle sort option selection
+        sortOptionsList.querySelectorAll('li').forEach((option) => {
+            option.addEventListener('click', () => {
+                const sortValue = option.dataset.sort;
+                const sortLabel = option.textContent.trim();
 
-        optionsMenu.querySelectorAll('li').forEach((option) => {
-            option.addEventListener('click', (e) => {
-                activeSort = e.target.dataset.sort;
-                currentSortText.textContent = e.target.textContent.toUpperCase();
-                optionsMenu.classList.remove('show');
-                renderProducts();
+                // Update active sort and UI
+                activeSort = sortValue;
+                selectedSortText.textContent = sortLabel;
+
+                // Remove active class from all options and add to selected
+                sortOptionsList.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+                option.classList.add('active');
+
+                // Close dropdown
+                sortOptionsList.classList.remove('show');
+
+                // Reset to page 1 when sort changes
+                currentPage = 1;
+
+                // Fetch products with new sort
+                fetchProducts(1);
             });
         });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!sortDropdown.contains(e.target)) {
+                sortOptionsList.classList.remove('show');
+            }
+        });
+    };
+
+    const fetchProducts = async (pageNumber = 1) => {
+        try {
+            const query = buildQueryParams(pageNumber);
+            const url = `${productsApiUrl}?${query}`;
+
+            console.log('[PRODUCT PAGE] Fetching:', url);
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to fetch products.');
+            }
+
+            products = Array.isArray(data.products) ? data.products.map(mapApiProduct) : [];
+            currentPage = Number(data.currentPage) || pageNumber;
+            totalPages = Number(data.totalPages) || 1;
+
+            renderProducts();
+            renderPagination();
+        } catch (error) {
+            console.error('[PRODUCT PAGE] Error:', error.message);
+            pdGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #d00; padding: 40px;">Unable to load products right now. Please try again.</p>';
+            if (paginationContainer) paginationContainer.innerHTML = '';
+        }
     };
 
     if (applyPriceFilterBtn) {
@@ -181,24 +277,53 @@ document.addEventListener('DOMContentLoaded', () => {
             minPriceDisplay.textContent = `Rs ${minPrice}`;
             maxPriceDisplay.textContent = `Rs ${maxPrice}+`;
 
-            renderProducts();
+            currentPage = 1;
+            fetchProducts(currentPage);
         });
     }
 
-    fetch(productDataUrl)
-        .then((response) => response.json())
-        .then((data) => {
-            allProducts = data;
-            renderCategoryList();
-            renderProducts();
-        })
-        .catch((error) => console.error('Error loading products:', error));
+    if (paginationContainer) {
+        paginationContainer.addEventListener('click', (e) => {
+            const button = e.target.closest('.page-btn');
+            if (!button || button.disabled) return;
+
+            const value = button.dataset.page;
+            if (value === 'prev' && currentPage > 1) {
+                fetchProducts(currentPage - 1);
+                return;
+            }
+
+            if (value === 'next' && currentPage < totalPages) {
+                fetchProducts(currentPage + 1);
+                return;
+            }
+
+            const selectedPage = parseInt(value, 10);
+            if (!Number.isNaN(selectedPage)) {
+                fetchProducts(selectedPage);
+            }
+        });
+    }
+
+    // Listen for updates from admin panel (other tabs) and refresh products
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'productsUpdated') {
+            try {
+                // Re-fetch current page to reflect changes
+                fetchProducts(currentPage);
+            } catch (err) {
+                console.error('Error refreshing products after update:', err);
+            }
+        }
+    });
 
     pdGrid.addEventListener('click', (e) => {
         if (e.target.classList.contains('pd-view-btn')) {
             const productCard = e.target.closest('.pd-card');
-            const productId = parseInt(productCard.dataset.productId, 10);
-            const fullProduct = allProducts.find((product) => product.id === productId);
+            if (!productCard) return;
+            
+            const productId = productCard.dataset.productId;
+            const fullProduct = products.find((product) => String(product.id) === String(productId));
 
             if (fullProduct) {
                 const productData = {
@@ -214,4 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    renderCategoryList();
+    fetchProducts(1);
 });

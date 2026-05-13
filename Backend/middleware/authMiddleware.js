@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -31,11 +32,33 @@ const protect = (req, res, next) => {
 
     const decoded = jwt.verify(token, jwtSecret);
 
+    const user = await User.findById(decoded.id).select('username email role isActive name mobile location avatarUrl lastLoginAt');
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User associated with this token was not found.',
+      });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: 'This account is inactive.',
+      });
+    }
+
     req.user = {
-      id: decoded.id,
-      username: decoded.username,
-      email: decoded.email,
-      role: decoded.role,
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      isActive: user.isActive,
+      name: user.name,
+      mobile: user.mobile,
+      location: user.location,
+      avatarUrl: user.avatarUrl,
+      lastLoginAt: user.lastLoginAt,
     };
 
     return next();
