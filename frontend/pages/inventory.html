@@ -76,7 +76,7 @@
     <div class="modal-overlay"></div>
     <div class="modal-content">
       <div class="modal-header"><h2 id="modalTitle">Add Product</h2><button class="modal-close">&times;</button></div>
-      <form id="inventoryForm" class="product-form">
+      <form id="inventoryForm" class="product-form" enctype="multipart/form-data">
         <div class="form-group"><label>Name</label><input id="i_name" required></div>
         <div class="form-row">
           <div class="form-group"><label>Price</label><input id="i_price" type="number" min="0" required></div>
@@ -92,7 +92,10 @@
             <option value="Gaming">Gaming</option>
           </select>
         </div>
-        <div class="form-group"><label>Image URL</label><input id="i_imageUrl" type="url"></div>
+        <div class="form-group">
+          <label>Product Image</label>
+          <input id="i_imageFile" name="image" type="file" accept="image/*">
+        </div>
         <div class="form-actions"><button type="button" class="btn-cancel">Cancel</button><button type="submit" class="btn-submit">Save</button></div>
       </form>
     </div>

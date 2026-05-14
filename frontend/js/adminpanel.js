@@ -28,6 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return localStorage.getItem('authToken');
     };
 
+    const resolveImageUrl = (imageUrl) => {
+        if (!imageUrl) return '../assets/images/Home/1.png';
+        if (/^(https?:)?\/\//i.test(imageUrl) || imageUrl.startsWith('data:') || imageUrl.startsWith('../')) {
+            return imageUrl;
+        }
+        if (imageUrl.startsWith('/uploads/')) return `http://localhost:5000${imageUrl}`;
+        if (imageUrl.startsWith('uploads/')) return `http://localhost:5000/${imageUrl}`;
+        return imageUrl;
+    };
+
     const showNotification = (message, type = 'success') => {
         const icon = notification.querySelector('.notification-icon');
         const messageSpan = notification.querySelector('.notification-message');
@@ -253,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
             row.innerHTML = `
                 <td>#${product._id.substring(0, 8).toUpperCase()}</td>
                 <td>
-                    ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}" class="p-icon" onerror="this.src='../assets/images/Home/1.png'">` : '<img src="../assets/images/Home/1.png" alt="placeholder" class="p-icon">'}
+                    ${product.imageUrl ? `<img src="${resolveImageUrl(product.imageUrl)}" alt="${product.name}" class="p-icon" onerror="this.src='../assets/images/Home/1.png'">` : '<img src="../assets/images/Home/1.png" alt="placeholder" class="p-icon">'}
                     ${product.name}
                 </td>
                 <td><span class="badge">${product.category}</span></td>

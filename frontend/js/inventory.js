@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const API_BASE_URL = 'http://localhost:5000/api';
+  const API_ORIGIN = 'http://localhost:5000';
   const tableBody = document.querySelector('#inventoryTable tbody');
   const filterCategory = document.getElementById('filterCategory');
   const filterStock = document.getElementById('filterStock');
@@ -21,6 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeMenu = null;
 
   const getToken = () => localStorage.getItem('authToken');
+
+  const resolveImageUrl = (imageUrl) => {
+    if (!imageUrl) return '../assets/images/Home/1.png';
+    if (/^(https?:)?\/\//i.test(imageUrl) || imageUrl.startsWith('data:')) return imageUrl;
+    if (imageUrl.startsWith('/uploads/')) return `${API_ORIGIN}${imageUrl}`;
+    if (imageUrl.startsWith('uploads/')) return `${API_ORIGIN}/${imageUrl}`;
+    return imageUrl;
+  };
 
   const getStockStatus = (stock) => {
     const value = Number(stock) || 0;
@@ -48,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('i_price').value = product?.price || '';
     document.getElementById('i_stock').value = product?.stock ?? '';
     document.getElementById('i_category').value = product?.category || '';
-    document.getElementById('i_imageUrl').value = product?.imageUrl || '';
+    document.getElementById('i_imageFile').value = '';
     modal.classList.remove('hidden');
   };
 
@@ -80,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     list.forEach((product) => {
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td><img src="${product.imageUrl || '../assets/images/Home/1.png'}" class="p-icon" style="width:48px;height:48px;object-fit:cover" alt="${product.name}"></td>
+        <td><img src="${resolveImageUrl(product.imageUrl)}" class="p-icon" style="width:48px;height:48px;object-fit:cover" alt="${product.name}"></td>
         <td>${product.name || ''}</td>
         <td>${product.category || ''}</td>
         <td>Rs ${Number(product.price || 0).toLocaleString()}</td>
@@ -147,35 +156,43 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitForm = async (event) => {
     event.preventDefault();
 
-    const payload = {
-      name: document.getElementById('i_name').value.trim(),
-      price: Number(document.getElementById('i_price').value) || 0,
-      stock: parseInt(document.getElementById('i_stock').value, 10) || 0,
-      category: document.getElementById('i_category').value.trim(),
-      imageUrl: document.getElementById('i_imageUrl').value.trim(),
-    };
+    const fileInput = document.getElementById('i_imageFile');
+    const token = getToken();
+
+    if (!token) {
+      alert('Please log in as an admin before uploading products.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', document.getElementById('i_name').value.trim());
+    formData.append('price', document.getElementById('i_price').value);
+    formData.append('stock', document.getElementById('i_stock').value);
+    formData.append('category', document.getElementById('i_category').value.trim());
+
+    if (fileInput.files[0]) {
+      formData.append('image', fileInput.files[0]);
+    }
 
     try {
-      const token = getToken();
       let response;
+
+      const requestOptions = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      };
 
       if (editId) {
         response = await fetch(`${API_BASE_URL}/products/${editId}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
+          ...requestOptions,
         });
       } else {
         response = await fetch(`${API_BASE_URL}/products`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(payload),
+          ...requestOptions,
         });
       }
 

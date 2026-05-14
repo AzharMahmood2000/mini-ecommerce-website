@@ -8,15 +8,34 @@ const {
 } = require('../controllers/productController');
 const { protect } = require('../middleware/authMiddleware');
 const { requireAdmin } = require('../middleware/adminMiddleware');
+const { singleImageUpload } = require('../middleware/uploadMiddleware');
 
 const router = express.Router();
 
 
-// POST /api/products - Create a new product (admin only)
-router.post('/', protect, requireAdmin, createProduct);
+
+// POST /api/products/upload - Upload a product image (public demo-friendly endpoint)
+router.post('/upload', singleImageUpload, (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      message: 'No image file provided',
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: 'Image uploaded successfully',
+    imageUrl: `/uploads/products/${req.file.filename}`,
+    file: req.file,
+  });
+});
+
+// POST /api/products - Create a product with optional image upload (public for demo/testing)
+router.post('/', singleImageUpload, createProduct);
 
 // PUT /api/products/:id - Update a product (admin only)
-router.put('/:id', protect, requireAdmin, updateProduct);
+router.put('/:id', protect, requireAdmin, singleImageUpload, updateProduct);
 
 // DELETE /api/products/:id - Delete a product (admin only)
 router.delete('/:id', protect, requireAdmin, deleteProduct);

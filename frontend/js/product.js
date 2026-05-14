@@ -31,8 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const normalizeImagePath = (imagePath) => {
         if (!imagePath) return '../assets/images/Home/1.png';
-        if (/^(https?:)?\/\//.test(imagePath) || imagePath.startsWith('../')) {
+        if (/^(https?:)?\/\//.test(imagePath) || imagePath.startsWith('data:') || imagePath.startsWith('../')) {
             return imagePath;
+        }
+        if (imagePath.startsWith('/uploads/')) {
+            return `http://localhost:5000${imagePath}`;
+        }
+        if (imagePath.startsWith('uploads/')) {
+            return `http://localhost:5000/${imagePath}`;
         }
         return `../${imagePath.replace(/^\.?\//, '')}`;
     };

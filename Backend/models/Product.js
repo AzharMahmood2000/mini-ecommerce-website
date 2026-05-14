@@ -51,9 +51,10 @@ const productSchema = new mongoose.Schema(
       validate: {
         validator: function (value) {
           if (value === '') return true;
-          return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(value);
+          // Allow either full http(s) URL or a server-relative uploads path
+          return /^(?:https?:\/\/.+\.(?:jpg|jpeg|png|gif|webp)$|(?:\/uploads\/.*\.(?:jpg|jpeg|png|gif|webp)$))/i.test(value);
         },
-        message: 'Invalid image URL format',
+        message: 'Invalid image URL or uploads path format',
       },
     },
     imageUrls: {
@@ -61,11 +62,12 @@ const productSchema = new mongoose.Schema(
       default: [],
       validate: {
         validator: function (value) {
-          return value.every(
-            (url) => /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(url)
+          if (!Array.isArray(value)) return false;
+          return value.every((url) =>
+            /^(?:https?:\/\/.+\.(?:jpg|jpeg|png|gif|webp)$|(?:\/uploads\/.*\.(?:jpg|jpeg|png|gif|webp)$))/i.test(url)
           );
         },
-        message: 'All image URLs must be valid',
+        message: 'All image URLs must be valid URLs or uploads paths',
       },
     },
     rating: {

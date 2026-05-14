@@ -4,7 +4,19 @@ const mongoose = require('mongoose');
 // Create a new product (admin only)
 const createProduct = async (req, res) => {
   try {
-    const { name, price, discountPrice, category, stock, description, imageUrl, brand } = req.body;
+    console.log('[CREATE PRODUCT] Incoming request', {
+      hasBody: !!req.body,
+      hasFile: !!req.file,
+      contentType: req.headers?.['content-type'],
+      fileName: req.file?.filename || null,
+    });
+
+    const body = req.body && typeof req.body === 'object' ? req.body : {};
+    const { name, price, discountPrice, category, stock, description, imageUrl, brand } = body;
+    const uploadedImageUrl = req.file && req.file.filename ? `/uploads/products/${req.file.filename}` : '';
+    const parsedPrice = Number(price);
+    const parsedStock = Number(stock);
+    const parsedDiscountPrice = discountPrice === undefined || discountPrice === '' ? null : Number(discountPrice);
 
     // Validate required fields
     if (!name || !price || !category || stock === undefined) {
@@ -15,43 +27,61 @@ const createProduct = async (req, res) => {
     }
 
     // Validate numeric fields
-    if (typeof price !== 'number' || price < 0) {
+    if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
       return res.status(400).json({
         success: false,
         message: 'Price must be a positive number',
       });
     }
 
-    if (typeof stock !== 'number' || stock < 0 || !Number.isInteger(stock)) {
+    if (Number.isNaN(parsedStock) || parsedStock < 0 || !Number.isInteger(parsedStock)) {
       return res.status(400).json({
         success: false,
         message: 'Stock must be a positive integer',
       });
     }
 
-    if (discountPrice && (typeof discountPrice !== 'number' || discountPrice > price)) {
+    if (parsedDiscountPrice !== null && (Number.isNaN(parsedDiscountPrice) || parsedDiscountPrice > parsedPrice)) {
       return res.status(400).json({
         success: false,
         message: 'Discount price must be less than price',
       });
     }
 
-    const newProduct = await Product.create({
+    const newProduct = new Product({
       name,
-      price,
-      discountPrice: discountPrice || null,
+      price: parsedPrice,
+      discountPrice: parsedDiscountPrice,
       category,
-      stock,
+      stock: parsedStock,
       description: description || '',
-      imageUrl: imageUrl || '',
+      // Prefer uploaded file path; fallback to provided imageUrl (which may be absolute or relative)
+      imageUrl: uploadedImageUrl || imageUrl || '',
       brand: brand || '',
     });
-
-    return res.status(201).json({
-      success: true,
-      message: 'Product created successfully',
-      product: newProduct,
-    });
+    // Save with validation; return validation errors as 400
+    try {
+      const saved = await newProduct.save();
+      console.log('[CREATE PRODUCT] Product saved', {
+        productId: saved._id,
+        imageUrl: saved.imageUrl,
+      });
+      return res.status(201).json({
+        success: true,
+        message: 'Product created successfully',
+        product: saved,
+      });
+    } catch (saveErr) {
+      // If validation error from Mongoose, return 400 with details
+      if (saveErr.name === 'ValidationError') {
+        const errors = Object.keys(saveErr.errors).reduce((acc, key) => {
+          acc[key] = saveErr.errors[key].message;
+          return acc;
+        }, {});
+        return res.status(400).json({ success: false, message: 'Validation failed', errors });
+      }
+      throw saveErr;
+    }
   } catch (error) {
     console.error('Create product error:', error.message);
     return res.status(500).json({
@@ -168,6 +198,14 @@ const getProductById = async (req, res) => {
 // Update a product (admin only)
 const updateProduct = async (req, res) => {
   try {
+    console.log('[UPDATE PRODUCT] Incoming request', {
+      hasBody: !!req.body,
+      hasFile: !!req.file,
+      contentType: req.headers?.['content-type'],
+      fileName: req.file?.filename || null,
+      productId: req.params?.id || null,
+    });
+
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -177,14 +215,33 @@ const updateProduct = async (req, res) => {
       });
     }
 
+    const body = req.body && typeof req.body === 'object' ? req.body : {};
     const allowedFields = ['name', 'price', 'discountPrice', 'description', 'category', 'stock', 'imageUrl', 'brand'];
     const updates = {};
 
-    allowedFields.forEach((field) => {
-      if (req.body.hasOwnProperty(field)) {
-        updates[field] = req.body[field];
-      }
-    });
+    if (req.file) {
+      updates.imageUrl = `/uploads/products/${req.file.filename}`;
+    }
+
+    if (body && typeof body === 'object') {
+      allowedFields.forEach((field) => {
+        if (body[field] !== undefined) {
+          updates[field] = body[field];
+        }
+      });
+    }
+
+    if (updates.price !== undefined) {
+      updates.price = Number(updates.price);
+    }
+
+    if (updates.stock !== undefined) {
+      updates.stock = Number(updates.stock);
+    }
+
+    if (updates.discountPrice !== undefined) {
+      updates.discountPrice = updates.discountPrice === '' ? null : Number(updates.discountPrice);
+    }
 
     if (Object.keys(updates).length === 0) {
       return res.status(400).json({
