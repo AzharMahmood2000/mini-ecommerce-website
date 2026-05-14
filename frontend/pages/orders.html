@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orders - Admin</title>
+  <link rel="stylesheet" href="../css/adminpanel-style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><h3>Admin Panel</h3><p>MANAGEMENT SUITE</p></div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="adminpanel.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+          <li><a href="inventory.html"><i class="fa-solid fa-box-archive"></i> Inventory</a></li>
+          <li><a href="sales.html"><i class="fa-solid fa-chart-line"></i> Sales</a></li>
+          <li><a href="customers.html"><i class="fa-solid fa-users"></i> Customers</a></li>
+          <li><a href="analytics.html"><i class="fa-solid fa-chart-pie"></i> Analytics</a></li>
+          <li><a href="orders.html"><i class="fa-solid fa-file-lines"></i> Orders</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <header class="admin-header"><div class="header-left"><h2>Ms Electronics Hub</h2></div></header>
+      <section class="card">
+        <div class="card-header"><h3>Orders</h3><p>Manage customer orders</p></div>
+        <div class="card-body">
+          <div class="table-responsive"><table id="ordersTable"><thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Order Status</th><th>Payment</th><th>Delivery</th><th>Actions</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="orderDetailsModal" class="modal hidden order-details-modal" aria-hidden="true">
+    <div class="modal-overlay"></div>
+    <div class="modal-content order-details-content">
+      <div class="modal-header order-details-header">
+        <div>
+          <p class="modal-kicker">Order overview</p>
+          <h2 id="orderDetailsTitle">Order Details</h2>
+        </div>
+        <button type="button" class="modal-close" id="orderDetailsClose" aria-label="Close order details">&times;</button>
+      </div>
+      <div class="order-details-body" id="orderDetailsBody"></div>
+    </div>
+  </div>
+
+  <script src="../js/sidebar-nav.js"></script>
+  <script src="../js/orders.js"></script>
+</body>
+</html>

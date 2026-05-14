@@ -95,7 +95,7 @@ const getAllProducts = async (req, res) => {
     let currentPage = 1;
     let totalPages = 1;
 
-    // Check if pagination is requested
+    // pagination is requested
     if (page || limit) {
       currentPage = Math.max(parseInt(page) || 1, 1);
       const perPage = Math.max(parseInt(limit) || 6, 1);

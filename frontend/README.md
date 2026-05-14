@@ -8,9 +8,8 @@ frontend/
 ├── README.md
 ├── product.json
 ├── assets/
-│   ├── images/
-│   ├── icons/
-│   └── fonts/
+│   └──  images/
+│    
 ├── css/
 │   ├── home-style.css
 │   ├── product-style.css
@@ -22,15 +21,20 @@ frontend/
 │   └── [other page scripts]
 └── pages/
     ├── adminpanel.html
+    ├── analytics.html
     ├── cart.html
     ├── checkout.html
+    ├── customers.html
     ├── login.html
     ├── orderconfirmation.html
+    ├── orders.html
     ├── orderhistory.html
     ├── product-detail.html
     ├── product.html
+    ├── sales.html
     ├── profile.html
     └── signup.html
+
 ```
 
 ## Notes

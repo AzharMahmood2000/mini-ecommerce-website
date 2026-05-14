@@ -18,7 +18,7 @@ const requireAdmin = (req, res, next) => {
 
       return res.status(403).json({
         success: false,
-        message: 'Forbidden. Admin access is required to create products.',
+        message: "Access denied. Only administrators are authorized to create products.",
       });
     }
 

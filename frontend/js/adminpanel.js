@@ -495,7 +495,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==================== EVENT LISTENERS ====================
-    addBtn.addEventListener('click', openModal);
+    if (addBtn) {
+        addBtn.addEventListener('click', openModal);
+    }
     modalCloseBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
     openModalOverlay();

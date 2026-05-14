@@ -20,16 +20,15 @@
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li class="active"><i class="fa-solid fa-table-columns"></i> Dashboard</li>
-                    <li><i class="fa-solid fa-box-archive"></i> Inventory</li>
-                    <li><i class="fa-solid fa-chart-line"></i> Sales</li>
-                    <li><i class="fa-solid fa-users"></i> Customers</li>
-                    <li><i class="fa-solid fa-chart-pie"></i> Analytics</li>
-                    <li><i class="fa-solid fa-file-lines"></i> Reports</li>
+                    <li class="active"><a href="adminpanel.html"><i class="fa-solid fa-table-columns"></i> Dashboard</a></li>
+                    <li><a href="inventory.html"><i class="fa-solid fa-box-archive"></i> Inventory</a></li>
+                    <li><a href="sales.html"><i class="fa-solid fa-chart-line"></i> Sales</a></li>
+                    <li><a href="customers.html"><i class="fa-solid fa-users"></i> Customers</a></li>
+                    <li><a href="analytics.html"><i class="fa-solid fa-chart-pie"></i> Analytics</a></li>
+                    <li><a href="orders.html"><i class="fa-solid fa-file-lines"></i> Orders</a></li>
                 </ul>
             </nav>
             <div class="sidebar-footer">
-                <button class="add-btn"><i class="fa-solid fa-plus"></i> Add New Product</button>
                 <div class="footer-link"><i class="fa-regular fa-circle-question"></i> Help Center</div>
 
                 <!-- Add Product Modal -->
@@ -61,7 +60,7 @@
                                 <div class="form-group">
                                     <label>Category *</label>
                                     <select id="productCategory" required>
-                                        <option value="">Select Category</option>
+                                        <option value="" selected>Select Category</option>
                                         <option value="Mobile Devices">Mobile Devices</option>
                                         <option value="Audio Systems">Audio Systems</option>
                                         <option value="Information Systems">Information Systems</option>
@@ -322,5 +321,6 @@
             </section>
         </main>
     </div>
+    <script src="../js/sidebar-nav.js"></script>
 </body>
 </html>
