@@ -11,13 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!pdGrid) return;
 
     const productsApiUrl = 'http://localhost:5000/api/products';
+    const categoriesApiUrl = 'http://localhost:5000/api/categories';
     const productsPerPage = 6;
-    const staticCategories = ['Mobile Devices', 'Audio Systems', 'Information Systems', 'Gaming'];
 
     let products = [];
+    let categories = [];
     let currentPage = 1;
     let totalPages = 1;
-    let activeCategory = 'all';
+    let activeCategory = new URLSearchParams(window.location.search).get('category') || 'all';
     let minPrice = 0;
     let maxPrice = 1000000;
     let activeSort = 'relevant';
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getCategoryIcon = (category) => {
         const normalized = String(category || '').toLowerCase();
+        if (normalized.includes('electronics')) return 'fas fa-bolt';
         if (normalized.includes('mobile')) return 'fas fa-mobile-alt';
         if (normalized.includes('audio')) return 'fas fa-headphones-alt';
         if (normalized.includes('gaming')) return 'fas fa-gamepad';
@@ -74,12 +76,36 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     };
 
+    const updateUrlCategory = () => {
+        const url = new URL(window.location.href);
+        if (activeCategory && activeCategory !== 'all') {
+            url.searchParams.set('category', activeCategory);
+        } else {
+            url.searchParams.delete('category');
+        }
+
+        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+    };
+
+    const setActiveCategory = (category, shouldFetch = true) => {
+        activeCategory = category || 'all';
+        currentPage = 1;
+        updateUrlCategory();
+        renderCategoryList();
+
+        if (shouldFetch) {
+            fetchProducts(1);
+        }
+    };
+
     const renderCategoryList = () => {
         if (!categoryList) return;
 
+        const categoryItems = categories.length > 0 ? categories : [];
+
         categoryList.innerHTML = [
             `<li class="${activeCategory === 'all' ? 'active' : ''}" data-category="all"><i class="fas fa-desktop"></i> ALL PRODUCTS</li>`,
-            ...staticCategories.map((category) => `
+            ...categoryItems.map((category) => `
                 <li class="${activeCategory === category ? 'active' : ''}" data-category="${category}">
                     <i class="${getCategoryIcon(category)}"></i> ${category}
                 </li>
@@ -88,15 +114,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         categoryList.querySelectorAll('li').forEach((item) => {
             item.addEventListener('click', () => {
-                activeCategory = item.dataset.category;
-                currentPage = 1;
-
-                categoryList.querySelectorAll('li').forEach((li) => li.classList.remove('active'));
-                item.classList.add('active');
-
-                fetchProducts(currentPage);
+                setActiveCategory(item.dataset.category, true);
             });
         });
+    };
+
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch(categoriesApiUrl);
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to fetch categories.');
+            }
+
+            categories = Array.isArray(data.categories) ? data.categories : [];
+
+            if (activeCategory !== 'all' && !categories.includes(activeCategory)) {
+                activeCategory = 'all';
+            }
+
+            updateUrlCategory();
+            renderCategoryList();
+        } catch (error) {
+            console.error('[PRODUCT PAGE] Category error:', error.message);
+            categories = [];
+            renderCategoryList();
+        }
     };
 
     const renderProducts = () => {
@@ -204,6 +248,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return params.toString();
     };
 
+    const buildProductsUrl = (pageNumber) => {
+        const query = buildQueryParams(pageNumber);
+
+        if (activeCategory && activeCategory !== 'all') {
+            return `http://localhost:5000/api/products/category/${encodeURIComponent(activeCategory)}?${query}`;
+        }
+
+        return `${productsApiUrl}?${query}`;
+    };
+
     const setupSortDropdown = () => {
         const sortDropdown = document.getElementById('sort-dropdown');
         const sortOptionsList = document.getElementById('sort-options-list');
@@ -251,8 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchProducts = async (pageNumber = 1) => {
         try {
-            const query = buildQueryParams(pageNumber);
-            const url = `${productsApiUrl}?${query}`;
+            const url = buildProductsUrl(pageNumber);
 
             console.log('[PRODUCT PAGE] Fetching:', url);
             const response = await fetch(url);
@@ -273,6 +326,10 @@ document.addEventListener('DOMContentLoaded', () => {
             pdGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #d00; padding: 40px;">Unable to load products right now. Please try again.</p>';
             if (paginationContainer) paginationContainer.innerHTML = '';
         }
+    };
+
+    window.filterProductsByCategory = (category) => {
+        setActiveCategory(category || 'all', true);
     };
 
     if (applyPriceFilterBtn) {
@@ -346,6 +403,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    renderCategoryList();
-    fetchProducts(1);
+    (async () => {
+        await fetchCategories();
+        updateUrlCategory();
+        fetchProducts(1);
+    })();
 });

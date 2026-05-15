@@ -17,11 +17,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const stockFilterTrigger = document.getElementById('stock-filter-trigger');
     const stockFilterLabel = document.getElementById('stock-filter-label');
     const stockFilterMenu = document.getElementById('stock-filter-menu');
+    const featureTableBody = document.getElementById('featuresTableBody');
     let activeActionsMenu = null;
     let activeFilterMenu = null;
     let allAdminProducts = [];
+    let allFeatures = [];
+    const featureOrder = ['safe_payment', 'easy_exchange', 'fast_delivery'];
+    const fallbackFeatures = [
+        { key: 'safe_payment', title: 'SAFE PAYMENT', message: 'Your payments are 100% secure and encrypted.' },
+        { key: 'easy_exchange', title: 'EASY EXCHANGES', message: 'Easy return and replacement within 7 days.' },
+        { key: 'fast_delivery', title: 'FAST DELIVERY', message: 'We deliver products within 24–48 hours.' },
+    ];
     let selectedCategoryFilter = 'all';
     let selectedStockFilter = 'all';
+    let currentPage = 1;
+    let totalPages = 1;
+    let totalProducts = 0;
+    const productsPerPage = 5;
+    const paginationControls = document.querySelector('.table-footer .pagination');
 
     // ==================== UTILITY FUNCTIONS ====================
     const getToken = () => {
@@ -36,6 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (imageUrl.startsWith('/uploads/')) return `http://localhost:5000${imageUrl}`;
         if (imageUrl.startsWith('uploads/')) return `http://localhost:5000/${imageUrl}`;
         return imageUrl;
+    };
+
+    const normalizeBoolean = (value) => {
+        if (typeof value === 'boolean') return value;
+        if (value === undefined || value === null || value === '') return false;
+        return ['true', '1', 'yes', 'on'].includes(String(value).trim().toLowerCase());
     };
 
     const showNotification = (message, type = 'success') => {
@@ -57,6 +76,140 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             notification.classList.add('hidden');
         }, 4000);
+    };
+
+    const formatDate = (value) => {
+        if (!value) return '-';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return '-';
+        return date.toLocaleDateString();
+    };
+
+    const resetFeatureForm = () => {
+        if (!featureTableBody) return;
+
+        featureTableBody.querySelectorAll('.feature-message-input').forEach((input) => {
+            input.dataset.dirty = 'false';
+            input.readOnly = true;
+            const row = input.closest('tr');
+            if (row) {
+                row.classList.remove('is-editing');
+                const saveBtn = row.querySelector('.feature-save-btn');
+                if (saveBtn) saveBtn.disabled = true;
+            }
+        });
+    };
+
+    const renderFeaturesTable = () => {
+        if (!featureTableBody) return;
+
+        featureTableBody.innerHTML = '';
+
+        const sourceFeatures = allFeatures.length ? allFeatures : fallbackFeatures;
+
+        const orderedFeatures = featureOrder
+            .map((key) => sourceFeatures.find((feature) => String(feature.key) === key))
+            .filter(Boolean);
+
+        if (!orderedFeatures.length) {
+            featureTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">Unable to load features</td></tr>';
+            return;
+        }
+
+        orderedFeatures.forEach((feature) => {
+            const row = document.createElement('tr');
+            row.dataset.featureKey = feature.key;
+            row.innerHTML = `
+                <td><span class="badge">${feature.key || '-'}</span></td>
+                <td><strong>${feature.title || 'Untitled Feature'}</strong></td>
+                <td>
+                    <textarea class="feature-message-input" rows="3" placeholder="Enter feature message" readonly>${feature.message || feature.description || ''}</textarea>
+                </td>
+                <td class="actions-cell">
+                    <button class="feature-edit-btn" type="button">Edit</button>
+                    <button class="feature-save-btn" type="button" disabled>Save</button>
+                </td>
+            `;
+            featureTableBody.appendChild(row);
+        });
+    };
+
+    const loadFeatures = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/features`);
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to load features');
+            }
+
+            const fetchedFeatures = Array.isArray(data.features) ? data.features : [];
+            allFeatures = featureOrder.map((key) => fetchedFeatures.find((feature) => String(feature.key) === key) || fallbackFeatures.find((feature) => feature.key === key));
+            renderFeaturesTable();
+        } catch (error) {
+            console.error('[FEATURES] Error:', error);
+            allFeatures = [...fallbackFeatures];
+            renderFeaturesTable();
+        }
+    };
+
+    const saveFeatureMessage = async (featureKey, message) => {
+        const token = getToken();
+        if (!token) {
+            showNotification('Authentication token missing. Please login again.', 'error');
+            return;
+        }
+
+        if (!message) {
+            showNotification('Feature message is required', 'warning');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/features/${featureKey}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ message }),
+            });
+
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                showNotification(data.message || 'Failed to save feature', 'error');
+                return;
+            }
+
+            showNotification('Feature updated successfully', 'success');
+            resetFeatureForm();
+            localStorage.setItem('featuresUpdated', Date.now().toString());
+            await loadFeatures();
+        } catch (error) {
+            console.error('[FEATURES] Submit error:', error);
+            showNotification('Error saving feature: ' + error.message, 'error');
+        }
+    };
+
+    const toggleFeatureEditing = (row, isEditing) => {
+        if (!row) return;
+
+        const messageInput = row.querySelector('.feature-message-input');
+        const saveBtn = row.querySelector('.feature-save-btn');
+
+        if (messageInput) {
+            messageInput.readOnly = !isEditing;
+            messageInput.dataset.dirty = isEditing ? 'true' : 'false';
+            if (isEditing) {
+                messageInput.focus();
+            }
+        }
+
+        if (saveBtn) {
+            saveBtn.disabled = !isEditing;
+        }
+
+        row.classList.toggle('is-editing', isEditing);
     };
 
     const isAuthenticated = () => {
@@ -88,6 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = () => {
         modal.classList.add('hidden');
         form.reset();
+        const showOnHomeCheckbox = document.getElementById('productShowOnHome');
+        if (showOnHomeCheckbox) showOnHomeCheckbox.checked = false;
         delete modal.dataset.editId;
         modal.querySelector('.modal-header h2').textContent = 'Add New Product';
         modal.querySelector('.btn-submit').textContent = 'Add Product';
@@ -121,10 +276,12 @@ document.addEventListener('DOMContentLoaded', () => {
             imageUrl: document.getElementById('productImageUrl').value.trim(),
             brand: document.getElementById('productBrand').value.trim(),
             sku: document.getElementById('productSku').value.trim() || undefined,
+            showOnHome: document.getElementById('productShowOnHome').checked,
         };
+        const productImageFile = document.getElementById('productImageFile').files[0];
 
         // Validate required fields
-        if (!productData.name || !productData.price || !productData.category || productData.stock === undefined) {
+        if (!productData.name || Number.isNaN(productData.price) || !productData.category || Number.isNaN(productData.stock)) {
             showNotification('Please fill in all required fields', 'warning');
             return;
         }
@@ -134,32 +291,34 @@ document.addEventListener('DOMContentLoaded', () => {
             // If modal has editId, perform update (PUT), else create (POST)
             const editId = modal.dataset.editId;
             let response;
+            const payload = new FormData();
+
+            ['name', 'price', 'description', 'category', 'stock', 'imageUrl', 'brand', 'discountPrice', 'sku'].forEach((field) => {
+                if (productData[field] !== undefined && productData[field] !== '') {
+                    payload.append(field, String(productData[field]));
+                }
+            });
+            payload.append('showOnHome', String(productData.showOnHome));
+
+            if (productImageFile) {
+                payload.append('image', productImageFile);
+            }
 
             if (editId) {
-                // Prepare only allowed fields for update
-                const updatePayload = {};
-                ['name','price','description','category','stock','imageUrl','brand','discountPrice'].forEach(field => {
-                    if (productData[field] !== undefined && productData[field] !== '') {
-                        updatePayload[field] = productData[field];
-                    }
-                });
-
                 response = await fetch(`${API_BASE_URL}/products/${editId}`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
                     },
-                    body: JSON.stringify(updatePayload),
+                    body: payload,
                 });
             } else {
                 response = await fetch(`${API_BASE_URL}/products`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
                     },
-                    body: JSON.stringify(productData),
+                    body: payload,
                 });
             }
 
@@ -183,9 +342,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // notify other pages (product listing) to refresh
             localStorage.setItem('productsUpdated', Date.now().toString());
 
-            // Reload products list
+            // Reload products list from first page so new product is visible
             setTimeout(() => {
-                loadAllProducts();
+                currentPage = 1;
+                loadAllProducts(currentPage);
             }, 500);
         } catch (error) {
             console.error('[ADMIN FORM] Error:', error);
@@ -194,14 +354,34 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==================== PRODUCT LISTING ====================
-    const loadAllProducts = async () => {
+    const loadAllProducts = async (page = currentPage) => {
         try {
-            console.log('[PRODUCTS] Fetching all products...');
+            console.log('[PRODUCTS] Fetching paginated products...', { page, productsPerPage });
 
-            const response = await fetch(`${API_BASE_URL}/products`, {
+            const token = getToken();
+            if (!token) {
+                showNotification('Authentication token missing. Please login again.', 'error');
+                return;
+            }
+
+            const params = new URLSearchParams({
+                page: String(page),
+                limit: String(productsPerPage),
+            });
+
+            if (selectedCategoryFilter !== 'all') {
+                params.set('category', selectedCategoryFilter);
+            }
+
+            if (selectedStockFilter !== 'all') {
+                params.set('stockStatus', selectedStockFilter);
+            }
+
+            const response = await fetch(`${API_BASE_URL}/admin/products?${params.toString()}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
             });
 
@@ -214,7 +394,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             allAdminProducts = Array.isArray(data.products) ? data.products : [];
-            renderFilteredAdminProducts();
+            currentPage = Number(data.currentPage) || page;
+            totalPages = Number(data.totalPages) || 1;
+            totalProducts = Number(data.totalProducts) || 0;
+
+            displayProductsInTable(allAdminProducts);
+            updatePaginationControls();
         } catch (error) {
             console.error('[PRODUCTS] Error:', error);
         }
@@ -228,18 +413,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'low_stock';
     };
 
-    const applyAdminFilters = (products) => {
-        return products.filter((product) => {
-            const categoryMatches = selectedCategoryFilter === 'all' || product.category === selectedCategoryFilter;
-            const stockMatches = selectedStockFilter === 'all' || getStockStatus(product.stock) === selectedStockFilter;
-            return categoryMatches && stockMatches;
-        });
-    };
-
-    const renderFilteredAdminProducts = () => {
-        displayProductsInTable(applyAdminFilters(allAdminProducts));
-    };
-
     const displayProductsInTable = (products) => {
         const tbody = document.querySelector('tbody');
         if (!tbody) return;
@@ -248,16 +421,16 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = '';
 
         if (!products || products.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No products found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No products found</td></tr>';
             const footer = document.querySelector('.table-footer span');
             if (footer) {
-                footer.textContent = 'Showing 0 of 0 products';
+                footer.textContent = `Showing 0 of ${totalProducts} products`;
             }
             return;
         }
 
-        // Display first 5 products
-        products.slice(0, 5).forEach(product => {
+        products.forEach(product => {
+            const isShownOnHome = normalizeBoolean(product.showOnHome);
             const row = document.createElement('tr');
             row.dataset.productId = product._id;
             row.innerHTML = `
@@ -269,6 +442,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><span class="badge">${product.category}</span></td>
                 <td><strong>Rs ${product.price.toLocaleString()}</strong></td>
                 <td>${product.stock} units</td>
+                <td>
+                    <button class="home-toggle-btn ${isShownOnHome ? 'enabled' : 'disabled'}" data-show-on-home="${isShownOnHome}">
+                        ${isShownOnHome ? 'ON' : 'OFF'}
+                    </button>
+                </td>
                 <td class="actions-cell">
                     <div class="row-actions">
                         <button class="ellipsis-btn" aria-label="Actions"><i class="fa-solid fa-ellipsis-vertical"></i></button>
@@ -285,8 +463,26 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update table footer
         const footer = document.querySelector('.table-footer span');
         if (footer) {
-            footer.textContent = `Showing ${Math.min(5, products.length)} of ${products.length} products`;
+            const start = totalProducts === 0 ? 0 : ((currentPage - 1) * productsPerPage) + 1;
+            const end = Math.min(currentPage * productsPerPage, totalProducts);
+            footer.textContent = `Showing ${start}-${end} of ${totalProducts} products`;
         }
+    };
+
+    const updatePaginationControls = () => {
+        if (!paginationControls) return;
+
+        const buttons = paginationControls.querySelectorAll('button');
+        if (buttons.length < 2) return;
+
+        const prevBtn = buttons[0];
+        const nextBtn = buttons[1];
+
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+
+        prevBtn.textContent = `Previous (Page ${currentPage}/${totalPages})`;
+        nextBtn.textContent = 'Next';
     };
 
     const closeActiveFilterMenu = () => {
@@ -317,7 +513,8 @@ document.addEventListener('DOMContentLoaded', () => {
             stockFilterMenu.querySelectorAll('li').forEach((item) => item.classList.toggle('active', item.dataset.value === value));
         }
 
-        renderFilteredAdminProducts();
+        currentPage = 1;
+        loadAllProducts(currentPage);
     };
 
     const toggleFilterMenu = (menuElement) => {
@@ -393,6 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('productImageUrl').value = product.imageUrl || '';
         document.getElementById('productBrand').value = product.brand || '';
         document.getElementById('productSku').value = product.sku || '';
+        document.getElementById('productShowOnHome').checked = normalizeBoolean(product.showOnHome);
 
         // Set modal to edit mode
         modal.dataset.editId = product._id;
@@ -436,10 +634,41 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('productsUpdated', Date.now().toString());
 
             // reload list
-            setTimeout(() => loadAllProducts(), 300);
+            setTimeout(() => loadAllProducts(currentPage), 300);
         } catch (error) {
             console.error('[DELETE PRODUCT] Error:', error);
             showNotification('Error deleting product: ' + error.message, 'error');
+        }
+    };
+
+    const handleToggleHomeProduct = async (productId, currentState) => {
+        const token = getToken();
+        if (!token) {
+            showNotification('Authentication token missing. Please login again.', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/products/${productId}/toggle-home`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                showNotification(data.message || 'Failed to update home visibility', 'error');
+                return;
+            }
+
+            showNotification(!currentState ? 'Product added to home page' : 'Product removed from home page', 'success');
+            localStorage.setItem('productsUpdated', Date.now().toString());
+            await loadAllProducts(currentPage);
+        } catch (error) {
+            console.error('[TOGGLE HOME] Error:', error);
+            showNotification('Error updating home visibility: ' + error.message, 'error');
         }
     };
 
@@ -447,14 +676,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.querySelector('tbody');
     if (tableBody) {
         tableBody.addEventListener('click', async (e) => {
-            const ellipsis = e.target.closest('.ellipsis-btn');
-            if (ellipsis) {
-                const actionsMenu = ellipsis.parentElement.querySelector('.actions-menu');
-                if (activeActionsMenu && activeActionsMenu !== actionsMenu) {
-                    activeActionsMenu.classList.add('hidden');
-                }
-                actionsMenu.classList.toggle('hidden');
-                activeActionsMenu = actionsMenu.classList.contains('hidden') ? null : actionsMenu;
+            const homeToggleBtn = e.target.closest('.home-toggle-btn');
+            if (homeToggleBtn) {
+                const row = homeToggleBtn.closest('tr');
+                const productId = row?.dataset.productId;
+                const currentState = normalizeBoolean(homeToggleBtn.dataset.showOnHome);
                 return;
             }
 
@@ -487,6 +713,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 const productId = row.dataset.productId;
                 handleDeleteProduct(productId, row);
                 return;
+            }
+        });
+    }
+
+    if (featureTableBody) {
+        featureTableBody.addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('.feature-edit-btn');
+            if (editBtn) {
+                const row = editBtn.closest('tr');
+                toggleFeatureEditing(row, true);
+                return;
+            }
+
+            const saveBtn = e.target.closest('.feature-save-btn');
+            if (saveBtn) {
+                const row = saveBtn.closest('tr');
+                const featureKey = row?.dataset.featureKey;
+                const messageInput = row?.querySelector('.feature-message-input');
+                const message = messageInput ? messageInput.value.trim() : '';
+
+                if (featureKey) {
+                    await saveFeatureMessage(featureKey, message);
+                    toggleFeatureEditing(row, false);
+                }
+                return;
+            }
+        });
+    }
+
+    if (paginationControls) {
+        paginationControls.addEventListener('click', (e) => {
+            const button = e.target.closest('button');
+            if (!button || button.disabled) return;
+
+            const text = button.textContent.toLowerCase();
+            if (text.includes('previous') && currentPage > 1) {
+                loadAllProducts(currentPage - 1);
+                return;
+            }
+
+            if (text.includes('next') && currentPage < totalPages) {
+                loadAllProducts(currentPage + 1);
             }
         });
     }
@@ -532,6 +800,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ==================== INITIALIZATION ====================
     if (isAuthenticated()) {
-        loadAllProducts();
+        loadAllProducts(currentPage);
     }
+
+    loadFeatures();
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'featuresUpdated') {
+            loadFeatures();
+        }
+    });
 });

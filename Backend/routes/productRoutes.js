@@ -3,6 +3,8 @@ const {
   createProduct,
   getAllProducts,
   getProductById,
+  getProductsByCategory,
+  toggleHomeProduct,
   updateProduct,
   deleteProduct,
 } = require('../controllers/productController');
@@ -14,8 +16,8 @@ const router = express.Router();
 
 
 
-// POST /api/products/upload - Upload a product image (public demo-friendly endpoint)
-router.post('/upload', singleImageUpload, (req, res) => {
+// POST /api/products/upload - Upload a product image (admin only)
+router.post('/upload', protect, requireAdmin, singleImageUpload, (req, res) => {
   if (!req.file) {
     return res.status(400).json({
       success: false,
@@ -31,11 +33,14 @@ router.post('/upload', singleImageUpload, (req, res) => {
   });
 });
 
-// POST /api/products - Create a product with optional image upload (public for demo/testing)
-router.post('/', singleImageUpload, createProduct);
+// POST /api/products - Create a product with optional image upload (admin only)
+router.post('/', protect, requireAdmin, singleImageUpload, createProduct);
 
 // PUT /api/products/:id - Update a product (admin only)
 router.put('/:id', protect, requireAdmin, singleImageUpload, updateProduct);
+
+// PATCH /api/products/:id/toggle-home - Toggle home page visibility (admin only)
+router.patch('/:id/toggle-home', protect, requireAdmin, toggleHomeProduct);
 
 // DELETE /api/products/:id - Delete a product (admin only)
 router.delete('/:id', protect, requireAdmin, deleteProduct);
@@ -43,6 +48,9 @@ router.delete('/:id', protect, requireAdmin, deleteProduct);
 
 // GET /api/products - Get all products (optional: filter by category, sort, pagination)
 router.get('/', getAllProducts);
+
+// GET /api/products/category/:category - Get products by category
+router.get('/category/:category', getProductsByCategory);
 
 // GET /api/products/:id - Get a single product by ID
 router.get('/:id', getProductById);

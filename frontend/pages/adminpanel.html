@@ -61,6 +61,7 @@
                                     <label>Category *</label>
                                     <select id="productCategory" required>
                                         <option value="" selected>Select Category</option>
+                                        <option value="Electronics">Electronics</option>
                                         <option value="Mobile Devices">Mobile Devices</option>
                                         <option value="Audio Systems">Audio Systems</option>
                                         <option value="Information Systems">Information Systems</option>
@@ -84,6 +85,11 @@
                             </div>
 
                             <div class="form-group">
+                                <label>Upload Product Image</label>
+                                <input type="file" id="productImageFile" accept="image/*">
+                            </div>
+
+                            <div class="form-group">
                                 <label>Brand</label>
                                 <input type="text" id="productBrand" placeholder="Enter brand name">
                             </div>
@@ -91,6 +97,13 @@
                             <div class="form-group">
                                 <label>SKU</label>
                                 <input type="text" id="productSku" placeholder="Enter SKU (auto-generated if empty)">
+                            </div>
+
+                            <div class="form-group checkbox-row">
+                                <label class="checkbox-label" for="productShowOnHome">
+                                    <input type="checkbox" id="productShowOnHome">
+                                    <span>Show on Home Page</span>
+                                </label>
                             </div>
 
                             <div class="form-actions">
@@ -275,6 +288,7 @@
                             </button>
                             <ul class="filter-menu hidden" id="category-filter-menu" role="menu" aria-labelledby="category-filter-trigger">
                                 <li role="menuitem" data-value="all">All Categories</li>
+                                <li role="menuitem" data-value="Electronics">Electronics</li>
                                 <li role="menuitem" data-value="Mobile Devices">Mobile Devices</li>
                                 <li role="menuitem" data-value="Audio Systems">Audio Systems</li>
                                 <li role="menuitem" data-value="Information Systems">Information Systems</li>
@@ -304,6 +318,7 @@
                             <th>CATEGORY</th>
                             <th>PRICE</th>
                             <th>STOCK</th>
+                            <th>HOME</th>
                             <th>ACTIONS</th>
                         </tr>
                     </thead>
@@ -319,8 +334,36 @@
                     </div>
                 </div>
             </section>
+
+            <section class="feature-management card">
+                <div class="card-header">
+                    <div>
+                        <h3>Homepage Features</h3>
+                        <p>Edit only the message text for the three fixed homepage features</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="feature-help-text">Each fixed feature has its own editable message field. Titles and keys stay locked.</p>
+
+                    <div class="table-responsive feature-table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>KEY</th>
+                                    <th>TITLE</th>
+                                    <th>MESSAGE</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="featuresTableBody">
+                                <tr><td colspan="4" style="text-align:center; padding:20px;">Loading features...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
-    <script src="../js/sidebar-nav.js"></script>
+    <script src="../js/sidebar-nav.js?v=2"></script>
 </body>
 </html>

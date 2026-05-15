@@ -45,7 +45,14 @@
           <div class="controls-row">
             <button id="btnAddProduct" class="add-btn"><i class="fa-solid fa-plus"></i> Add Product</button>
             <div class="filters">
-              <select id="filterCategory"><option value="all">All Categories</option></select>
+              <select id="filterCategory">
+                <option value="all">All Categories</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Mobile Devices">Mobile Devices</option>
+                <option value="Audio Systems">Audio Systems</option>
+                <option value="Information Systems">Information Systems</option>
+                <option value="Gaming">Gaming</option>
+              </select>
               <select id="filterStock"><option value="all">All Stocks</option><option value="in_stock">In Stock</option><option value="low_stock">Low Stock</option><option value="out_of_stock">Out of Stock</option></select>
             </div>
           </div>
@@ -86,10 +93,11 @@
           <label>Category</label>
           <select id="i_category" required>
             <option value="" selected>Select Category</option>
-            <option value="Mobile Devices">Mobile Devices</option>
-            <option value="Audio Systems">Audio Systems</option>
-            <option value="Information Systems">Information Systems</option>
-            <option value="Gaming">Gaming</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Mobile Devices">Mobile Devices</option>
+              <option value="Audio Systems">Audio Systems</option>
+              <option value="Information Systems">Information Systems</option>
+              <option value="Gaming">Gaming</option>
           </select>
         </div>
         <div class="form-group">

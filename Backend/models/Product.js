@@ -36,7 +36,13 @@ const productSchema = new mongoose.Schema(
       trim: true,
       maxlength: [50, 'Category cannot exceed 50 characters'],
       required: [true, 'Category is required'],
-      enum: ['Mobile Devices', 'Audio Systems', 'Information Systems', 'Gaming'],
+      enum: [
+        'Electronics',
+        'Mobile Devices',
+        'Audio Systems',
+        'Information Systems',
+        'Gaming',
+      ],
     },
     stock: {
       type: Number,
@@ -86,6 +92,10 @@ const productSchema = new mongoose.Schema(
       default: true,
     },
     isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+    showOnHome: {
       type: Boolean,
       default: false,
     },

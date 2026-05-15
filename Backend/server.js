@@ -7,6 +7,11 @@ const connectDB = require('./config/db');
 const Product = require('./models/Product');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
+const homeProductsRoutes = require('./routes/homeProductsRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const featureRoutes = require('./routes/featureRoutes');
+const { ensureDefaultFeatures } = require('./controllers/featureController');
 
 // Load .env file
 dotenv.config();
@@ -36,6 +41,22 @@ console.log(' User routes loaded: /api/users');
 app.use('/api/products', productRoutes);
 console.log(' Product routes loaded: /api/products');
 
+// Admin routes
+app.use('/api/admin', adminRoutes);
+console.log(' Admin routes loaded: /api/admin');
+
+// Home products route
+app.use('/api/home-products', homeProductsRoutes);
+console.log(' Home products route loaded: /api/home-products');
+
+// Categories route
+app.use('/api/categories', categoryRoutes);
+console.log(' Categories route loaded: /api/categories');
+
+// Features route
+app.use('/api/features', featureRoutes);
+console.log(' Features route loaded: /api/features');
+
 // Simple test POST endpoint
 app.post('/test-api', (req, res) => {
   console.log(' TEST POST endpoint received request');
@@ -60,34 +81,6 @@ app.use((req, res) => {
     message: `Cannot ${req.method} ${req.path}`,
   });
 });
-
-// Function to insert sample data
-const insertSampleData = async () => {
-  try {
-    // Check if any products already exist
-    const existingProduct = await Product.findOne();
-    
-    if (existingProduct) {
-      console.log('Sample data already exists. Skipping insertion.');
-      return;
-    }
-
-    // Sample product data
-    const sampleProduct = new Product({
-      name: 'iPhone 17 Pro Max',
-      price: 300000,
-      description: 'Experience the pinnacle of mobile technology with the iPhone 17 Pro Max. Featuring an advanced titanium design, ultra-fast processing speeds, and a stunning triple-lens camera system.',
-      category: 'Mobile Devices',
-      stock: 50,
-    });
-
-    // Save to database
-    await sampleProduct.save();
-    console.log('Sample product inserted successfully:', sampleProduct.name);
-  } catch (error) {
-    console.error('Error inserting sample data:', error.message);
-  }
-};
 
 // Remove old product indexes that no longer match the schema
 const removeLegacyProductIndexes = async () => {
@@ -118,9 +111,7 @@ const startServer = async () => {
     console.log('Connected host:', mongoose.connection.host);
 
     await removeLegacyProductIndexes();
-
-    // Insert sample data after connection
-    await insertSampleData();
+    await ensureDefaultFeatures();
 
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);

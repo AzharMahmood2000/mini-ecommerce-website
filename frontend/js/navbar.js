@@ -79,6 +79,59 @@ function updateNavbar() {
     });
 }
 
+async function renderFooterCategories() {
+    const footers = document.querySelectorAll('footer.footer');
+    if (!footers.length) return;
+
+    try {
+        const response = await fetch('http://localhost:5000/api/categories');
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            return;
+        }
+
+        const categories = Array.isArray(data.categories) ? data.categories : [];
+        const productPagePath = getPagePath('product.html');
+
+        footers.forEach((footer) => {
+            const productColumn = Array.from(footer.querySelectorAll('.footer-col')).find((column) => {
+                const heading = column.querySelector('h4');
+                return heading && heading.textContent.trim().toUpperCase() === 'PRODUCT';
+            });
+
+            if (!productColumn) return;
+
+            const list = productColumn.querySelector('.footer-links');
+            if (!list) return;
+
+            if (!categories.length) {
+                list.innerHTML = '<li><span class="footer-empty">No categories available</span></li>';
+                return;
+            }
+
+            list.innerHTML = categories.map((category) => `
+                <li><a href="${productPagePath}?category=${encodeURIComponent(category)}" data-category="${category}">${category}</a></li>
+            `).join('');
+
+            list.querySelectorAll('a[data-category]').forEach((link) => {
+                link.addEventListener('click', (event) => {
+                    if (!window.location.pathname.replace(/\\/g, '/').includes('/pages/product.html')) {
+                        return;
+                    }
+
+                    if (typeof window.filterProductsByCategory === 'function') {
+                        event.preventDefault();
+                        window.filterProductsByCategory(link.dataset.category);
+                    }
+                });
+            });
+        });
+    } catch (error) {
+        console.error('Failed to render footer categories:', error);
+    }
+}
+
 // Profile menu handling
 function onProfileClick(e) {
     e.preventDefault();
@@ -171,4 +224,8 @@ function logout() {
 window.updateNavbar = updateNavbar;
 window.goToProfile = goToProfile;
 window.logout = logout;
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderFooterCategories();
+});
 
