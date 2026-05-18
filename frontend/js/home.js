@@ -162,11 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="img-container">
                         <img src="${imageSrc}" alt="${product.name || 'Product'}" onerror="this.src='assets/images/Home/1.png'">
                     </div>
-                    <div class="product-info">
-                        <h3>${product.name || 'Unnamed Product'}</h3>
-                        <p class="price">${formatPrice(product.price)}</p>
-                        <button class="view-btn">VIEW DETAILS</button>
-                    </div>
+                        <div class="product-info">
+                            <h3>${product.name || 'Unnamed Product'}</h3>
+                            <p class="price">${formatPrice(product.price)}</p>
+                            <button class="view-btn">VIEW DETAILS</button>
+                        </div>
                 `;
 
                 productGrid.appendChild(productCard);
@@ -207,7 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 localStorage.setItem('selectedProduct', JSON.stringify(productData));
-                window.location.href = 'pages/product-detail.html';
+                // Navigate to product detail and include product id in query for reliable fetching
+                window.location.href = `pages/product-detail.html?id=${encodeURIComponent(productData.id)}`;
             }
         });
     }

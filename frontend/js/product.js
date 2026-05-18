@@ -381,25 +381,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     pdGrid.addEventListener('click', (e) => {
-        if (e.target.classList.contains('pd-view-btn')) {
-            const productCard = e.target.closest('.pd-card');
-            if (!productCard) return;
-            
-            const productId = productCard.dataset.productId;
-            const fullProduct = products.find((product) => String(product.id) === String(productId));
+        if (!e.target.classList.contains('pd-view-btn')) return;
 
-            if (fullProduct) {
-                const productData = {
-                    id: fullProduct.id,
-                    name: fullProduct.name,
-                    price: fullProduct.price,
-                    image: normalizeImagePath(fullProduct.image),
-                    description: fullProduct.description,
-                };
+        const productCard = e.target.closest('.pd-card');
+        if (!productCard) return;
 
-                localStorage.setItem('selectedProduct', JSON.stringify(productData));
-                window.location.href = 'product-detail.html';
-            }
+        const productId = productCard.dataset.productId;
+        const fullProduct = products.find((product) => String(product.id) === String(productId));
+
+        if (fullProduct) {
+            const productData = {
+                id: fullProduct.id,
+                name: fullProduct.name,
+                price: fullProduct.price,
+                image: normalizeImagePath(fullProduct.image),
+                description: fullProduct.description,
+            };
+
+            localStorage.setItem('selectedProduct', JSON.stringify(productData));
+            // navigate with id to allow direct fetch
+            window.location.href = `product-detail.html?id=${encodeURIComponent(productData.id)}`;
         }
     });
 

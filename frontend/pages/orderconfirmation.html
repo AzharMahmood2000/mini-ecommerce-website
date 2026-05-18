@@ -46,19 +46,19 @@
         <div class="order-summary-bar card">
             <div class="summary-col">
                 <span class="label">Order Number</span>
-                <span class="value">#MEH-829472</span>
+                <span class="value" id="orderNumber">-</span>
             </div>
             <div class="summary-col">
                 <span class="label">Date</span>
-                <span class="value">Oct 24, 2023</span>
+                <span class="value" id="orderDate">-</span>
             </div>
             <div class="summary-col">
                 <span class="label">Status</span>
-                <span class="value status-confirmed">Confirmed</span>
+                <span class="value" id="orderStatus">-</span>
             </div>
             <div class="summary-col">
                 <span class="label">Payment Method</span>
-                <span class="value">Visa Card</span>
+                <span class="value" id="paymentMethod">-</span>
             </div>
         </div>
 
@@ -68,37 +68,15 @@
             <!-- Ordered Items Card -->
             <div class="card item-list-card">
                 <h2>Ordered Items</h2>
-                <div class="item">
-                    <img src="../assets/images/Apple iPhone 17 Pro max.jpg" alt="Iphone 17 Pro Max" class="item-img">
-                    <div class="item-info">
-                        <h3>Iphone 17 Pro Max</h3>
-                        <p class="variant">Titanium Grey | 256GB</p>
-                    </div>
-                    <div class="item-price-qty">
-                        <span class="price">Rs. 300,000</span>
-                        <span class="qty">Qty: 1</span>
-                    </div>
-                </div>
-                <div class="item">
-                    <img src="../assets/images/Home/5.png" alt="Sony Headphone" class="item-img">
-                    <div class="item-info">
-                        <h3>Sony Headphone</h3>
-                        <p class="variant">Noise Cancelling | Black</p>
-                    </div>
-                    <div class="item-price-qty">
-                        <span class="price">Rs. 9,500</span>
-                        <span class="qty">Qty: 1</span>
-                    </div>
-                </div>
+                <div id="orderedItems"></div>
             </div>
 
             <!-- Shipping Address Card -->
             <div class="card shipping-card">
                 <h2>Shipping Address</h2>
-                <p>John Doe</p>
-                <p>123 Electronic Street, Tech Park</p>
-                <p>Colombo, Sri Lanka, 00100</p>
-                <p>Phone: +94 77 123 4567</p>
+                <div id="shippingAddress">
+                    <p>-</p>
+                </div>
             </div>
         </div>
 
@@ -110,19 +88,19 @@
                 <h3>Payment Summary</h3>
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span>Rs. 309,500</span>
+                    <span id="subtotal">-</span>
                 </div>
                 <div class="summary-row">
                     <span>Shipping</span>
-                    <span class="free-text">Free</span>
+                    <span id="shippingCost" class="free-text">-</span>
                 </div>
                 <div class="summary-row">
                     <span>Tax</span>
-                    <span>Rs. 500</span>
+                    <span id="taxCost">-</span>
                 </div>
                 <div class="total-row">
                     <span>Total</span>
-                    <span class="total-price">Rs. 310,000</span>
+                    <span id="totalPrice">-</span>
                 </div>
                 <button class="btn btn-primary">Track Your Order</button>
                 <button class="btn btn-secondary">Continue Shopping</button>

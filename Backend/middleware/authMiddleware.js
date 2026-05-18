@@ -3,9 +3,11 @@ const User = require('../models/User');
 
 const protect = async (req, res, next) => {
   try {
+    console.log('  [Protect] Checking authorization...');
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('  [Protect] No valid auth header');
       return res.status(401).json({
         success: false,
         message: 'Authorization token missing. Use Bearer token.',
@@ -15,6 +17,7 @@ const protect = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     if (!token) {
+      console.log('  [Protect] No token in auth header');
       return res.status(401).json({
         success: false,
         message: 'Token not found in Authorization header.',
@@ -24,6 +27,7 @@ const protect = async (req, res, next) => {
     const jwtSecret = process.env.JWT_SECRET;
 
     if (!jwtSecret) {
+      console.log('  [Protect] No JWT secret configured');
       return res.status(500).json({
         success: false,
         message: 'JWT secret is not configured on the server.',
@@ -35,6 +39,7 @@ const protect = async (req, res, next) => {
     const user = await User.findById(decoded.id).select('username email role isActive name mobile location avatarUrl lastLoginAt');
 
     if (!user) {
+      console.log('  [Protect] User not found for token');
       return res.status(401).json({
         success: false,
         message: 'User associated with this token was not found.',
@@ -42,14 +47,16 @@ const protect = async (req, res, next) => {
     }
 
     if (!user.isActive) {
+      console.log('  [Protect] User is inactive');
       return res.status(403).json({
         success: false,
         message: 'This account is inactive.',
       });
     }
 
+    console.log(`  [Protect] Auth successful for user: ${user.email}, calling next()`);
     req.user = {
-      id: user._id,
+      _id: user._id,
       username: user.username,
       email: user.email,
       role: user.role,
@@ -63,6 +70,7 @@ const protect = async (req, res, next) => {
 
     return next();
   } catch (error) {
+    console.log(`  [Protect] Error: ${error.message}`);
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         success: false,

@@ -8,92 +8,175 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function extractPrice(priceString) {
-        // Extract numeric value from price string like "Rs. 300,000"
-        return parseInt(priceString.replace(/[^\d]/g, ''));
+        if (typeof priceString === 'number') return priceString;
+        if (!priceString) return 0;
+        // Extract numeric value from price string like "Rs. 300,000" or "Rs 300000"
+        return parseInt(String(priceString).replace(/[^\d]/g, ''), 10) || 0;
     }
 
-    // Use static HTML elements for frontend development instead of overwriting them
-    function initStaticCart() {
-        const cartItems = document.querySelectorAll('.cart-item');
-        
-        cartItems.forEach((itemElement) => {
+    // Fetch cart from backend and render
+    const apiBase = 'http://localhost:5000/api/cart';
+
+    async function fetchCartFromServer() {
+        const cartId = localStorage.getItem('cartId');
+        if (!cartId) {
+            cartItemsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: #777;">Your cart is empty</p>';
+            subtotalEl.textContent = formatCurrency(0);
+            grandTotalEl.textContent = formatCurrency(0);
+            return;
+        }
+
+        try {
+            const resp = await fetch(`${apiBase}?cartId=${encodeURIComponent(cartId)}`);
+            const data = await resp.json();
+            if (!resp.ok || !data.success) throw new Error(data.message || 'Failed to fetch cart');
+
+            const items = (data.cart && Array.isArray(data.cart.items)) ? data.cart.items : [];
+
+            if (!items.length) {
+                cartItemsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: #777;">Your cart is empty</p>';
+                subtotalEl.textContent = formatCurrency(0);
+                grandTotalEl.textContent = formatCurrency(0);
+                return;
+            }
+
+            cartItemsContainer.innerHTML = items.map(item => {
+                const basePrice = extractPrice(item.price);
+                const qty = Number(item.quantity) || 1;
+                const itemTotal = basePrice * qty;
+                const subtitle = item.subtitle || item.description || '';
+
+                return `
+                    <div class="cart-item" data-id="${item.productId}" data-price="${basePrice}">
+                        <div class="cart-thumb"><img src="${item.image || '../assets/images/Home/1.png'}" alt="${(item.name || '')}"></div>
+                        <div class="cart-body">
+                            <h4 class="cart-title">${item.name || ''}</h4>
+                            <div class="cart-meta">${subtitle ? `<span>${subtitle}</span>` : ''}</div>
+                            <div style="height:8px"></div>
+                            <div class="cart-actions" style="display:flex;gap:12px;align-items:center;font-size:13px;margin-top:6px;">
+                                <button class="btn-remove remove-btn"><i class="fas fa-trash" style="font-size:12px"></i> REMOVE</button>
+                            </div>
+                        </div>
+
+                        <div class="item-quantity-price">
+                            <div class="quantity-control">
+                                <button class="qty-btn minus">-</button>
+                                <span class="qty-val">${qty}</span>
+                                <button class="qty-btn plus">+</button>
+                            </div>
+                            <div style="margin-top:8px; text-align:right;">
+                                <div class="price-val">Rs. ${itemTotal.toLocaleString()}</div>
+                                <div class="unit-price">Rs. ${basePrice.toLocaleString()} each</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            attachCartEventHandlers();
+            updateSummaryFromServerItems(items);
+        } catch (err) {
+            console.error('Failed to load cart from server:', err.message || err);
+            cartItemsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: #777;">Unable to load cart</p>';
+            subtotalEl.textContent = formatCurrency(0);
+            grandTotalEl.textContent = formatCurrency(0);
+        }
+    }
+
+    function attachCartEventHandlers() {
+        cartItemsContainer.querySelectorAll('.cart-item').forEach(itemElement => {
             const minusBtn = itemElement.querySelector('.minus');
             const plusBtn = itemElement.querySelector('.plus');
             const removeBtn = itemElement.querySelector('.remove-btn');
             const qtySpan = itemElement.querySelector('.qty-val');
-            const priceSpan = itemElement.querySelector('.price-val');
-            const basePrice = parseInt(itemElement.getAttribute('data-price'));
+
+            const itemId = itemElement.getAttribute('data-id');
 
             if (minusBtn) {
-                minusBtn.addEventListener('click', () => {
-                    let qty = parseInt(qtySpan.textContent);
+                minusBtn.addEventListener('click', async () => {
+                    let qty = parseInt(qtySpan.textContent, 10);
                     if (qty > 1) {
                         qty--;
-                        qtySpan.textContent = qty;
-                        priceSpan.textContent = (basePrice * qty).toLocaleString();
-                        updateSummary();
+                        try {
+                            await updateItemOnServer(itemId, qty);
+                            await fetchCartFromServer();
+                        } catch (err) {
+                            console.error(err);
+                        }
                     }
                 });
             }
 
             if (plusBtn) {
-                plusBtn.addEventListener('click', () => {
-                    let qty = parseInt(qtySpan.textContent);
+                plusBtn.addEventListener('click', async () => {
+                    let qty = parseInt(qtySpan.textContent, 10) || 0;
                     qty++;
-                    qtySpan.textContent = qty;
-                    priceSpan.textContent = (basePrice * qty).toLocaleString();
-                    updateSummary();
+                    try {
+                        await updateItemOnServer(itemId, qty);
+                        await fetchCartFromServer();
+                    } catch (err) {
+                        console.error(err);
+                    }
                 });
             }
 
             if (removeBtn) {
-                removeBtn.addEventListener('click', () => {
-                    if (confirm('Are you sure you want to remove this item?')) {
-                        itemElement.style.opacity = '0';
-                        itemElement.style.transform = 'translateX(-20px)';
-                        itemElement.style.transition = 'all 0.3s ease';
-                        setTimeout(() => {
-                            itemElement.remove();
-                            updateSummary();
-                            
-                            // Show empty message if all items are removed
-                            if (document.querySelectorAll('.cart-item').length === 0) {
-                                cartItemsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: #777;">Your cart is empty</p>';
-                            }
-                        }, 300);
+                removeBtn.addEventListener('click', async () => {
+                    // Ask user for permission before removing
+                    const ok = confirm('Are you sure you want to remove this item from your cart?');
+                    if (!ok) return;
+
+                    try {
+                        await updateItemOnServer(itemId, 0);
+                        // fully refresh the page to reflect updated cart state
+                        window.location.reload();
+                    } catch (err) {
+                        console.error(err);
+                        alert(err && err.message ? `Unable to remove item: ${err.message}` : 'Unable to remove item.');
                     }
                 });
             }
         });
-
-        updateSummary();
     }
 
-    function updateSummary() {
-        const cartItems = document.querySelectorAll('.cart-item');
+    async function updateItemOnServer(productId, quantity) {
+        const cartId = localStorage.getItem('cartId');
+        if (!cartId) throw new Error('No cartId available');
+
+        const item = { productId, quantity };
+        const resp = await fetch(apiBase, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cartId, item }),
+        });
+
+        const data = await resp.json();
+        if (!resp.ok || !data.success) throw new Error(data.message || 'Failed to update item');
+        return data.cart;
+    }
+
+    function updateSummaryFromServerItems(items) {
         let total = 0;
-        
-        cartItems.forEach(item => {
-            const price = parseInt(item.getAttribute('data-price'));
-            const qty = parseInt(item.querySelector('.qty-val').textContent);
-            const itemTotal = price * qty;
-            
-            item.querySelector('.price-val').textContent = (itemTotal).toLocaleString();
-            total += itemTotal;
+        items.forEach(i => {
+            const price = extractPrice(i.price);
+            const qty = Number(i.quantity) || 1;
+            total += price * qty;
         });
 
         subtotalEl.textContent = formatCurrency(total);
         grandTotalEl.textContent = formatCurrency(total);
     }
 
-    // Initial render using static HTML items
-    initStaticCart();
+    // Initial render from server
+    fetchCartFromServer();
 
     // Checkout button
     const checkoutBtn = document.querySelector('.checkout-btn');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', (event) => {
             event.preventDefault();
+            localStorage.setItem('checkoutMode', 'cart');
+            localStorage.removeItem('checkoutItem');
             window.location.href = './checkout.html';
         });
     }

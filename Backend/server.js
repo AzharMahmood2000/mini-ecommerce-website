@@ -11,6 +11,9 @@ const homeProductsRoutes = require('./routes/homeProductsRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const featureRoutes = require('./routes/featureRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const { protect } = require('./middleware/authMiddleware');
 const { ensureDefaultFeatures } = require('./controllers/featureController');
 
 // Load .env file
@@ -24,6 +27,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
 
 // Test route
 app.get('/', (req, res) => {
@@ -56,6 +65,14 @@ console.log(' Categories route loaded: /api/categories');
 // Features route
 app.use('/api/features', featureRoutes);
 console.log(' Features route loaded: /api/features');
+
+// Cart route
+app.use('/api/cart', cartRoutes);
+console.log(' Cart route loaded: /api/cart');
+
+// Orders route
+app.use('/api/orders', orderRoutes);
+console.log(' Orders route loaded: /api/orders');
 
 // Simple test POST endpoint
 app.post('/test-api', (req, res) => {

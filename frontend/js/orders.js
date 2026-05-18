@@ -6,35 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderDetailsTitle = document.querySelector('#orderDetailsTitle');
   const orderDetailsClose = document.querySelector('#orderDetailsClose');
   const ORDER_STATUS_OPTIONS = [
-    { value: 'pending', label: 'Pending' },
+    { value: 'processing', label: 'Processing' },
     { value: 'shipped', label: 'Shipped' },
     { value: 'delivered', label: 'Delivered' },
     { value: 'cancelled', label: 'Cancelled' },
   ];
-  const STORAGE_KEY = 'adminOrdersState';
-
-  const mock = [];
-  for (let i = 1; i <= 8; i++) {
-    mock.push({
-      id: 'ORD' + (2000 + i),
-      customer: 'Customer ' + i,
-      email: `customer${i}@mail.com`,
-      phone: `+92 300 12345${i}`,
-      address: `${i} Main Road, Karachi`,
-      items: Math.ceil(Math.random() * 4),
-      products: [
-        { name: 'Wireless Headphones', qty: 1, price: 6499 },
-        { name: 'Charging Cable', qty: 2, price: 899 },
-      ].slice(0, Math.ceil(Math.random() * 2) + 1),
-      total: Math.floor(Math.random() * 20000) + 500,
-      orderStatus: ORDER_STATUS_OPTIONS[Math.floor(Math.random() * ORDER_STATUS_OPTIONS.length)].value,
-      payment: Math.random() > 0.2 ? 'Paid' : 'Pending',
-      paymentMethod: ['Card', 'Cash on Delivery', 'Bank Transfer'][Math.floor(Math.random() * 3)],
-      delivery: ['Not dispatched', 'In transit', 'Delivered'][Math.floor(Math.random() * 3)],
-      orderedAt: new Date(Date.now() - (i * 86400000)).toISOString(),
-      note: i % 2 === 0 ? 'Call before delivery.' : 'Handle with care.'
-    });
-  }
 
   let ordersState = [];
   let activeOrder = null;
@@ -42,11 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const normalizeStatus = (status) => {
     const value = String(status || '').toLowerCase();
-    if (['pending', 'processing', 'confirmed'].includes(value)) return 'pending';
+    if (['pending', 'processing', 'confirmed'].includes(value)) return 'processing';
     if (['shipped', 'in transit', 'transit'].includes(value)) return 'shipped';
     if (['delivered', 'complete', 'completed'].includes(value)) return 'delivered';
     if (['cancelled', 'canceled', 'cancel'].includes(value)) return 'cancelled';
-    return 'pending';
+    return 'processing';
   };
 
   const getStatusClass = (status) => {
@@ -89,36 +65,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }));
     }
 
-    const fallbackCount = Math.max(Number(order.items) || 1, 1);
-    return Array.from({ length: fallbackCount }, (_, index) => ({
-      name: `Item ${index + 1}`,
-      qty: 1,
-      price: fallbackCount > 1 ? Math.round(Number(order.total || 0) / fallbackCount) : Number(order.total || 0),
-    }));
+    return [];
   };
 
-  const hydrateOrder = (order, index = 0) => {
-    const customerName = order.customer || order.userName || `Customer ${index + 1}`;
-    const emailSeed = String(customerName)
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '.')
-      .replace(/^\.+|\.+$/g, '');
+  const hydrateOrder = (order) => {
     const products = Array.isArray(order.products) ? order.products : [];
+    const shippingAddress = order.shippingAddress || {};
 
     return {
-      id: order.id || order._id || `ORD${2001 + index}`,
-      customer: customerName,
-      email: order.email || order.customerEmail || `${emailSeed || 'customer'}@mail.com`,
-      phone: order.phone || order.customerPhone || `+92 300 1234${(index + 1).toString().padStart(1, '0')}`,
-      address: order.address || order.shippingAddress || `${index + 1} Main Road, Karachi`,
-      items: Number(order.items || products.length || 1),
-      total: Number(order.total || order.amount || 0),
-      orderStatus: normalizeStatus(order.orderStatus || order.status),
-      payment: order.payment || 'Paid',
-      paymentMethod: order.paymentMethod || order.paymentType || 'Cash on Delivery',
-      delivery: order.delivery || 'Not dispatched',
-      orderedAt: order.orderedAt || order.createdAt || order.updatedAt || new Date(Date.now() - ((index + 1) * 86400000)).toISOString(),
-      note: order.note || order.message || 'Customer requested careful handling.',
+      id: order._id || order.id,
+      customerName: order.customerName || shippingAddress.fullName || order.userId?.username || 'Unknown customer',
+      email: order.email || shippingAddress.email || order.userId?.email || 'Not available',
+      phone: order.phone || shippingAddress.phone || shippingAddress.mobileNumber || 'Not available',
+      address: order.address || shippingAddress.address || 'Not available',
+      city: shippingAddress.city || '',
+      state: shippingAddress.state || '',
+      country: shippingAddress.country || '',
+      items: products.length,
+      totalAmount: Number(order.totalAmount || 0),
+      paymentStatus: order.paymentStatus || 'pending',
+      deliveryStatus: normalizeStatus(order.deliveryStatus || order.orderStatus),
+      paymentMethod: order.paymentMethod || 'COD',
+      orderedAt: order.createdAt || order.updatedAt || null,
+      note: order.note || order.message || '',
       products,
     };
   };
@@ -149,10 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="order-hero">
         <div>
           <span class="order-id-pill">#${escapeHtml(order.id)}</span>
-          <h3>${escapeHtml(order.customer)}</h3>
+          <h3>${escapeHtml(order.customerName)}</h3>
           <p>Placed on ${escapeHtml(formatDate(order.orderedAt))}</p>
         </div>
-        <span class="order-status-badge ${getStatusClass(order.orderStatus)}">${escapeHtml(getStatusLabel(order.orderStatus))}</span>
+        <span class="order-status-badge ${getStatusClass(order.deliveryStatus)}">${escapeHtml(getStatusLabel(order.deliveryStatus))}</span>
       </div>
 
       <div class="order-summary-cards">
@@ -162,15 +131,15 @@ document.addEventListener('DOMContentLoaded', () => {
         </article>
         <article class="summary-card">
           <span>Total</span>
-          <strong>${escapeHtml(formatCurrency(order.total))}</strong>
+          <strong>${escapeHtml(formatCurrency(order.totalAmount))}</strong>
         </article>
         <article class="summary-card">
-          <span>Payment</span>
-          <strong>${escapeHtml(order.payment || 'Pending')}</strong>
+          <span>Payment Status</span>
+          <strong>${escapeHtml(order.paymentStatus)}</strong>
         </article>
         <article class="summary-card">
-          <span>Delivery</span>
-          <strong>${escapeHtml(order.delivery || 'Not dispatched')}</strong>
+          <span>Delivery Status</span>
+          <strong>${escapeHtml(order.deliveryStatus)}</strong>
         </article>
       </div>
 
@@ -181,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <i class="fa-solid fa-user"></i>
           </div>
           <div class="detail-list">
-            <div><span>Name</span><strong>${escapeHtml(order.customer)}</strong></div>
+            <div><span>Name</span><strong>${escapeHtml(order.customerName)}</strong></div>
             <div><span>Email</span><strong>${escapeHtml(order.email || 'Not available')}</strong></div>
             <div><span>Phone</span><strong>${escapeHtml(order.phone || 'Not available')}</strong></div>
             <div><span>Address</span><strong>${escapeHtml(order.address || 'Not available')}</strong></div>
@@ -195,8 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="detail-list">
             <div><span>Payment method</span><strong>${escapeHtml(order.paymentMethod || 'Not available')}</strong></div>
-            <div><span>Payment status</span><strong>${escapeHtml(order.payment || 'Pending')}</strong></div>
-            <div><span>Delivery status</span><strong>${escapeHtml(order.delivery || 'Not dispatched')}</strong></div>
+            <div><span>Payment status</span><strong>${escapeHtml(order.paymentStatus || 'pending')}</strong></div>
+            <div><span>Delivery status</span><strong>${escapeHtml(order.deliveryStatus || 'processing')}</strong></div>
             <div><span>Order date</span><strong>${escapeHtml(formatDate(order.orderedAt))}</strong></div>
           </div>
         </section>
@@ -232,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div>
             <span>Grand total</span>
-            <strong>${escapeHtml(formatCurrency(order.total))}</strong>
+            <strong>${escapeHtml(formatCurrency(order.totalAmount))}</strong>
           </div>
         </div>
       </section>
@@ -248,20 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     orderDetailsModal.setAttribute('aria-hidden', 'false');
   };
 
-  const loadStoredOrders = () => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : null;
-    } catch (error) {
-      return null;
-    }
-  };
-
-  const saveStoredOrders = () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ordersState));
-  };
+  // no local mock or storage: admin orders come from server
 
   const render = (list) => {
     tbody.innerHTML = '';
@@ -270,16 +226,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>#${o.id}</td>
-        <td>${o.customer}</td>
+        <td>${escapeHtml(o.customerName)}</td>
         <td>${o.items}</td>
-        <td>Rs ${Number(o.total || 0).toLocaleString()}</td>
+        <td>${escapeHtml(formatCurrency(o.totalAmount))}</td>
         <td>
-          <select class="order-status-select ${getStatusClass(o.orderStatus)}" data-id="${o.id}">
-            ${ORDER_STATUS_OPTIONS.map((option) => `<option value="${option.value}" ${normalizeStatus(o.orderStatus) === option.value ? 'selected' : ''}>${option.label}</option>`).join('')}
+          <select class="order-status-select ${getStatusClass(o.deliveryStatus)}" data-id="${o.id}">
+            ${ORDER_STATUS_OPTIONS.map((option) => `<option value="${option.value}" ${normalizeStatus(o.deliveryStatus) === option.value ? 'selected' : ''}>${option.label}</option>`).join('')}
           </select>
         </td>
-        <td>${o.payment}</td>
-        <td>${o.delivery}</td>
+        <td>${escapeHtml(o.paymentStatus)}</td>
+        <td>${escapeHtml(o.deliveryStatus)}</td>
         <td>
           <button class="btn-view" data-id="${o.id}" type="button">
             <i class="fa-solid fa-eye"></i>
@@ -291,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const statusSelect = tr.querySelector('.order-status-select');
       if (statusSelect) {
-        statusSelect.className = `order-status-select ${getStatusClass(o.orderStatus)}`;
+        statusSelect.className = `order-status-select ${getStatusClass(o.deliveryStatus)}`;
       }
     });
   };
@@ -305,37 +261,30 @@ document.addEventListener('DOMContentLoaded', () => {
       if (String(order.id) !== String(orderId)) return order;
       return {
         ...order,
+        deliveryStatus: normalizeStatus(newStatus),
         orderStatus: normalizeStatus(newStatus),
       };
     });
-    saveStoredOrders();
     renderOrders();
   };
 
   const load = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/orders`);
+      const token = localStorage.getItem('authToken');
+      const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+      const res = await fetch(`${API_BASE_URL}/admin/orders`, { headers });
       const json = await res.json();
-      if (res.ok && Array.isArray(json.orders) && json.orders.length) {
-        ordersState = json.orders.map((order, index) => ({
-          ...hydrateOrder(order, index),
-          products: Array.isArray(order.products)
-            ? order.products.map((product) => ({
-                name: product.name || product.title || 'Product',
-                qty: Number(product.qty || product.quantity || 1),
-                price: Number(product.price || product.subtotal || 0),
-              }))
-            : [],
-        }));
-        saveStoredOrders();
+      console.log('[ADMIN ORDERS] API response:', json);
+      if (res.ok && Array.isArray(json.orders)) {
+        ordersState = json.orders.map((order) => hydrateOrder(order));
         renderOrders();
         return;
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error('[ADMIN ORDERS] Failed to load orders from API:', err);
+    }
 
-    const stored = loadStoredOrders();
-    ordersState = stored && stored.length ? stored.map((order, index) => hydrateOrder(order, index)) : mock.map((order, index) => hydrateOrder(order, index));
-    saveStoredOrders();
+    ordersState = [];
     renderOrders();
   };
 
@@ -344,10 +293,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (view) openOrderDetails(view.dataset.id);
   });
 
-  tbody.addEventListener('change', (e) => {
+  tbody.addEventListener('change', async (e) => {
     const statusSelect = e.target.closest('.order-status-select');
     if (!statusSelect) return;
-    syncStatusById(statusSelect.dataset.id, statusSelect.value);
+    const orderId = statusSelect.dataset.id;
+    const newStatus = statusSelect.value;
+
+    // send update to server (admin)
+    try {
+      const token = localStorage.getItem('authToken');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      const resp = await fetch(`${API_BASE_URL}/admin/orders/${encodeURIComponent(orderId)}/status`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ status: newStatus }),
+      });
+      const json = await resp.json();
+      if (!resp.ok) throw new Error(json.message || 'Failed to update status');
+
+      syncStatusById(orderId, newStatus);
+    } catch (err) {
+      alert('Unable to update order status: ' + (err.message || err));
+      // revert select to previous value from local state
+      const local = ordersState.find(o => String(o.id) === String(orderId));
+      if (local) statusSelect.value = local.deliveryStatus || 'processing';
+    }
   });
 
   orderDetailsClose?.addEventListener('click', closeOrderDetails);

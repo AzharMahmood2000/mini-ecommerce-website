@@ -19,7 +19,7 @@
                 <div class="logo-text">MS <br><span>ELECTRONICS HUB</span></div>
             </div>
             <ul class="nav-links">
-                <li><a href="home.html">Home</a></li>
+                <li><a href="../index.html">Home</a></li>
                 <li><a href="product.html">Product</a></li>
                 <li><a href="cart.html">Cart</a></li>
                 <li><a href="#">Login</a></li>
@@ -162,59 +162,25 @@
             <div class="summary-card">
                 <div class="summary-title">
                     <h3>Order Summary</h3>
-                    <span class="item-count">(3 items)</span>
+                    <span class="item-count" id="summaryItemCount">(0 items)</span>
                 </div>
 
-                <div class="summary-items">
-                    <!-- Item 1 -->
-                    <div class="summary-item">
-                        <div class="item-thumb">
-                            <img src="../assets/images/Home/1.png" alt="Iphone 17">
-                        </div>
-                        <div class="item-info">
-                            <h4>Iphone 17 Pro Max</h4>
-                            <p class="qty">QTY: 1</p>
-                            <span class="price">Rs.300000</span>
-                        </div>
-                    </div>
-
-                    <!-- Item 2 -->
-                    <div class="summary-item">
-                        <div class="item-thumb">
-                            <img src="../assets/images/Home/5.png" alt="Headphones">
-                        </div>
-                        <div class="item-info">
-                            <h4>Sony Headphone</h4>
-                            <p class="qty">QTY: 2</p>
-                            <span class="price">Rs.82500</span>
-                        </div>
-                    </div>
-
-                    <!-- Item 3 -->
-                    <div class="summary-item">
-                        <div class="item-thumb">
-                            <img src="../assets/images/product/4.png" alt="Laptop">
-                        </div>
-                        <div class="item-info">
-                            <h4>Asus ROG Zephyrus</h4>
-                            <p class="qty">QTY: 1</p>
-                            <span class="price">Rs.450000</span>
-                        </div>
-                    </div>
+                <div class="summary-items" id="summaryItems">
+                    <p class="summary-empty">No items selected yet.</p>
                 </div>
 
                 <div class="totals-section">
                     <div class="total-row">
                         <span>Subtotal</span>
-                        <span>Rs.832500</span>
+                        <span id="summarySubtotal">Rs.0</span>
                     </div>
                     <div class="total-row">
                         <span>Shipping</span>
-                        <span class="free-text">FREE</span>
+                        <span class="free-text" id="summaryShipping">FREE</span>
                     </div>
                     <div class="grand-total">
                         <span>Total</span>
-                        <span class="amount">Rs.832500</span>
+                        <span class="amount" id="summaryTotal">Rs.0</span>
                     </div>
                 </div>
 

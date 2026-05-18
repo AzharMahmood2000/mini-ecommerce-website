@@ -178,11 +178,12 @@ body {
 .cart-item {
     display: flex;
     align-items: center;
-    padding: 20px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    margin-bottom: 20px;
-    gap: 25px;
+    padding: 22px;
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    gap: 24px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
 .item-img {
@@ -256,56 +257,120 @@ body {
 
 .item-quantity-price {
     text-align: right;
-    min-width: 140px;
+    min-width: 160px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 20px;
+    gap: 14px;
 }
 
 .quantity-control {
     display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    border: 1px solid #e2e8f0;
-    border-radius: 50px;
-    padding: 4px 12px;
-    min-width: 100px;
-    background-color: #fff;
+    justify-content: center;
+    border: 1px solid #e6eef6;
+    border-radius: 999px;
+    padding: 6px 8px;
+    min-width: 110px;
+    background-color: #ffffff;
+    gap: 10px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
 }
 
 .qty-btn {
-    background: none;
-    border: none;
-    font-size: 18px;
-    font-weight: 400;
-    color: #333;
+    background: #ffffff;
+    border: 1px solid #e6eef6;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f172a;
     cursor: pointer;
-    padding: 0 5px;
+    padding: 0;
     line-height: 1;
-    transition: color 0.2s;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .qty-btn:hover {
-    color: #0066cc;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(2,6,23,0.06);
 }
 
 .qty-val {
     font-size: 15px;
-    font-weight: 600;
-    color: #1a1a1a;
-    padding: 0 15px;
+    font-weight: 700;
+    color: #0f172a;
+    padding: 6px 14px;
     user-select: none;
+    background: #f3f6fb;
+    border-radius: 999px;
+}
+
+.item-actions .remove-btn {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+}
+.item-actions .remove-btn i { color: #ef4444; font-size:12px }
+.item-actions .remove-btn:hover { opacity: 0.9; text-decoration: none; }
+
+/* Action button container (if you wrap remove & save for later together) */
+.product-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+/* The standalone Remove button */
+.btn-remove {
+    background: none;
+    border: none;
+    color: #dc2626;            /* Premium red text color */
+    font-family: inherit;      /* Inherits your site's default font */
+    font-size: 13px;
+    font-weight: 600;          /* Semi-bold text */
+    text-transform: uppercase; /* Match the capitalized design */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;                  /* Space between trash icon and text */
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+/* Hover state for a native web interaction feel */
+.btn-remove:hover {
+    color: #991b1b;            /* Darker red shift on hover */
+    opacity: 0.9;
+}
+
+/* Focus state for accessibility */
+.btn-remove:focus {
+    outline: 2px solid rgba(220, 38, 38, 0.2);
+    border-radius: 4px;
 }
 
 .item-price {
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .unit-price {
     display: block;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-muted);
 }
 
@@ -416,17 +481,18 @@ hr {
 
 .checkout-btn {
     width: 100%;
-    padding: 16px 20px;
-    border-radius: 8px;
+    padding: 14px 20px;
+    border-radius: 14px;
     border: none;
-    background: linear-gradient(90deg, #0ea5e9 0%, #1e3a8a 100%);
+    background: linear-gradient(90deg, #06b6d4 0%, #3730a3 100%);
     color: white;
-    font-weight: 600;
-    font-size: 14px;
+    font-weight: 700;
+    font-size: 15px;
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.18);
 }
 
 .warranty-card {

@@ -11,7 +11,7 @@ const requireAdmin = (req, res, next) => {
 
     if (req.user.role !== 'admin') {
       console.warn('[ADMIN AUTH] Forbidden access attempt by non-admin user:', {
-        userId: req.user.id,
+        userId: req.user._id || req.user.id,
         email: req.user.email,
         role: req.user.role,
       });
@@ -23,7 +23,7 @@ const requireAdmin = (req, res, next) => {
     }
 
     console.log('[ADMIN AUTH] Admin access granted for:', {
-      userId: req.user.id,
+      userId: req.user._id || req.user.id,
       email: req.user.email,
     });
 
@@ -38,6 +38,9 @@ const requireAdmin = (req, res, next) => {
   }
 };
 
+const verifyAdmin = requireAdmin;
+
 module.exports = {
   requireAdmin,
+  verifyAdmin,
 };
