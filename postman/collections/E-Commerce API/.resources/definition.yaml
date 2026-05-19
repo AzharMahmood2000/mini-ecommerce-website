@@ -1,0 +1,12 @@
+$kind: collection
+name: E-Commerce API
+variables:
+  - key: email
+    value: ''
+    type: default
+  - key: password
+    value: ''
+    type: default
+  - key: authToken
+    value: ''
+    type: default

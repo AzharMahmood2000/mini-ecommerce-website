@@ -77,16 +77,29 @@ const createOrder = async (req, res) => {
 };
 
 // @desc    Get orders for logged-in user
-// @route   GET /api/orders
+// @route   GET /api/orders/my
 // @access  Private
-const getUserOrders = async (req, res) => {
+const getMyOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user._id }).sort({ createdAt: -1 });
-    return res.status(200).json({ success: true, orders });
+    const orders = await Order.find({ userId: req.user._id })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({
+      success: true,
+      orders,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('[MY ORDERS] Error fetching orders:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch user orders',
+    });
   }
 };
+
+// Backward-compatible user orders route
+const getUserOrders = getMyOrders;
 
 const getAdminOrders = async (req, res) => {
   try {
@@ -153,6 +166,7 @@ const updateOrderStatus = async (req, res) => {
 
 module.exports = {
   createOrder,
+  getMyOrders,
   getUserOrders,
   getAdminOrders,
   getOrderById,

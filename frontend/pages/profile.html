@@ -19,11 +19,11 @@
             <aside class="sidebar-card">
                 <div class="user-header">
                     <div class="avatar-wrapper">
-                        <img src="../assets/images/account.png" alt="Profile Picture" class="avatar">
+                        <img src="../assets/images/account.png" alt="Profile Picture" class="avatar" id="sidebarAvatar">
                     </div>
                     <div class="user-info">
-                        <h3>Your name</h3>
-                        <p>yourname@gmail.com</p>
+                        <h3 id="sidebarName">Your name</h3>
+                        <p id="sidebarEmail">yourname@gmail.com</p>
                     </div>
                 </div>
                 
@@ -52,41 +52,48 @@
                 <div class="card-header">
                     <div class="header-user-info">
                         <div class="avatar-edit-wrapper">
-                            <img src="../assets/images/account.png" alt="Profile Picture" class="avatar-large">
-                            <button class="edit-btn" title="Change Photo">
+                            <img src="../assets/images/account.png" alt="Profile Picture" class="avatar-large" id="profileAvatar">
+                            <button class="edit-btn" type="button" title="Change Photo" id="changePhotoBtn">
                                 <i data-lucide="pencil"></i>
                             </button>
                         </div>
                         <div class="user-detail-text">
-                            <h2>Your name</h2>
-                            <p>yourname@gmail.com</p>
+                            <h2 id="profileNamePreview">Your name</h2>
+                            <p id="profileEmailPreview">yourname@gmail.com</p>
                         </div>
                     </div>
-                    <button class="close-btn" title="Close">
+                    <button class="close-btn" type="button" title="Close" id="closeProfileBtn">
                         <i data-lucide="x"></i>
                     </button>
                 </div>
 
-                <div class="form-container">
+                <div id="profileStatus" class="status-banner" aria-live="polite"></div>
+
+                <input type="file" id="profileImageFile" accept="image/*" hidden>
+
+                <form class="form-container" id="profileForm">
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input type="text" id="name" value="your name" placeholder="Enter your name">
+                        <input type="text" id="name" placeholder="Enter your name" autocomplete="name">
                     </div>
                     <div class="form-group">
                         <label for="email">Email account</label>
-                        <input type="email" id="email" value="yourname@gmail.com" placeholder="Enter your email">
+                        <input type="email" id="email" placeholder="Enter your email" autocomplete="email">
                     </div>
                     <div class="form-group">
                         <label for="mobile">Mobile number</label>
-                        <input type="tel" id="mobile" value="" placeholder="Add number">
+                        <input type="tel" id="mobile" placeholder="Enter your mobile number" autocomplete="tel">
                     </div>
                     <div class="form-group">
                         <label for="location">Location</label>
-                        <input type="text" id="location" value="USA" placeholder="Enter location">
+                        <input type="text" id="location" placeholder="Enter your city or location" autocomplete="street-address">
                     </div>
 
-                    <button type="submit" class="save-btn" id="save-btn">Save Change</button>
-                </div>
+                    <div class="actions-row">
+                        <button type="button" class="secondary-btn" id="resetProfileBtn">Reset</button>
+                        <button type="submit" class="save-btn" id="save-btn">Save Changes</button>
+                    </div>
+                </form>
             </main>
         </div>
     </div>

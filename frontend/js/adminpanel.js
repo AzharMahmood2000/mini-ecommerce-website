@@ -676,11 +676,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.querySelector('tbody');
     if (tableBody) {
         tableBody.addEventListener('click', async (e) => {
+            const ellipsisBtn = e.target.closest('.ellipsis-btn');
+            if (ellipsisBtn) {
+                const menu = ellipsisBtn.closest('.row-actions')?.querySelector('.actions-menu');
+                if (!menu) return;
+
+                if (activeActionsMenu && activeActionsMenu !== menu) {
+                    activeActionsMenu.classList.add('hidden');
+                }
+
+                menu.classList.toggle('hidden');
+                activeActionsMenu = menu.classList.contains('hidden') ? null : menu;
+                return;
+            }
+
             const homeToggleBtn = e.target.closest('.home-toggle-btn');
             if (homeToggleBtn) {
                 const row = homeToggleBtn.closest('tr');
                 const productId = row?.dataset.productId;
                 const currentState = normalizeBoolean(homeToggleBtn.dataset.showOnHome);
+                if (productId) {
+                    await handleToggleHomeProduct(productId, currentState);
+                }
                 return;
             }
 

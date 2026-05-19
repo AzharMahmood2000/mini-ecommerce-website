@@ -69,7 +69,58 @@ const singleImageUpload = (req, res, next) => {
   });
 };
 
+const profileUploadDir = path.join(__dirname, '..', 'uploads', 'profiles');
+
+if (!fs.existsSync(profileUploadDir)) {
+  fs.mkdirSync(profileUploadDir, { recursive: true });
+}
+
+const profileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, profileUploadDir);
+  },
+  filename: (req, file, cb) => {
+    const safeName = file.originalname.replace(/\s+/g, '-').toLowerCase();
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}-${safeName}`);
+  },
+});
+
+const profileImageUpload = multer({
+  storage: profileStorage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
+
+const singleProfileImageUpload = (req, res, next) => {
+  const handler = profileImageUpload.single('profileImage');
+
+  handler(req, res, (err) => {
+    if (err) {
+      console.error('[PROFILE MULTER] Upload error:', err.message);
+
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({
+          success: false,
+          message: `Upload error: ${err.message}`,
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message: err.message || 'File upload failed',
+      });
+    }
+
+    return next();
+  });
+};
+
+const uploadProfileImage = singleProfileImageUpload;
+
 module.exports = {
   uploadProductImage,
   singleImageUpload,
+  profileImageUpload,
+  singleProfileImageUpload,
+  uploadProfileImage,
 };

@@ -42,7 +42,7 @@
                 </div>
                 <div class="stat-info">
                     <span class="stat-label">ACTIVE ORDERS</span>
-                    <span class="stat-value">3</span>
+                    <span class="stat-value" id="activeOrdersCount">0</span>
                 </div>
             </div>
             <div class="stat-card">
@@ -51,7 +51,7 @@
                 </div>
                 <div class="stat-info">
                     <span class="stat-label">IN TRANSIT</span>
-                    <span class="stat-value">1</span>
+                    <span class="stat-value" id="inTransitOrdersCount">0</span>
                 </div>
             </div>
             <div class="stat-card">
@@ -60,7 +60,7 @@
                 </div>
                 <div class="stat-info">
                     <span class="stat-label">TOTAL PURCHASES</span>
-                    <span class="stat-value">12</span>
+                    <span class="stat-value" id="totalPurchasesCount">0</span>
                 </div>
             </div>
         </section>
@@ -68,12 +68,17 @@
         <!-- Transactions Table Container -->
         <section class="transactions-wrapper">
             <div class="transactions-header">
-                <h2>Recent Transactions</h2>
+                <div>
+                    <h2>Recent Transactions</h2>
+                    <p class="transactions-subtitle">Your latest orders from the signed-in account.</p>
+                </div>
                 <div class="tab-buttons">
                     <button class="tab-btn active">All Orders</button>
                     <button class="tab-btn">Returns</button>
                 </div>
             </div>
+
+            <div id="ordersStatus" class="orders-status" aria-live="polite"></div>
 
             <div class="table-container">
                 <table class="order-table">
@@ -87,48 +92,11 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- Row 1 -->
+                    <tbody id="ordersTableBody">
                         <tr>
-                            <td class="order-id">#ORD-1024</td>
-                            <td class="order-date">May 12, 2024</td>
-                            <td>
-                                <div class="product-stack">
-                                    <img src="../assets/images/Home/3.png" alt="item">
-                                    <img src="../assets/images/Home/4.png" alt="item">
-                                    <span class="more-items">+1</span>
-                                </div>
+                            <td colspan="6">
+                                <div class="table-state table-state-loading">Loading your orders...</div>
                             </td>
-                            <td><span class="badge status-shipped">Shipped</span></td>
-                            <td class="order-total">Rs.300000</td>
-                            <td class="order-action"><a href="#">View Details <i class="fas fa-chevron-right"></i></a></td>
-                        </tr>
-                        <!-- Row 2 -->
-                        <tr>
-                            <td class="order-id">#ORD-0988</td>
-                            <td class="order-date">April 28, 2024</td>
-                            <td>
-                                <div class="product-stack">
-                                    <img src="../assets/images/Home/1.png" alt="item">
-                                    <img src="../assets/images/Home/2.png" alt="item">
-                                </div>
-                            </td>
-                            <td><span class="badge status-delivered">Delivered</span></td>
-                            <td class="order-total">Rs.130000</td>
-                            <td class="order-action"><a href="#">View Details <i class="fas fa-chevron-right"></i></a></td>
-                        </tr>
-                        <!-- Row 3 -->
-                        <tr>
-                            <td class="order-id">#ORD-0852</td>
-                            <td class="order-date">April 15, 2024</td>
-                            <td>
-                                <div class="product-stack">
-                                    <img src="../assets/images/Home/6.png" alt="item">
-                                </div>
-                            </td>
-                            <td><span class="badge status-delivered">Delivered</span></td>
-                            <td class="order-total">Rs.150000</td>
-                            <td class="order-action"><a href="#">View Details <i class="fas fa-chevron-right"></i></a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -136,7 +104,7 @@
 
             <!-- Footer / Pagination -->
             <div class="transactions-footer">
-                <span class="showing-text">Showing 3 of 12 orders</span>
+                <span id="ordersSummaryText" class="showing-text">Loading orders...</span>
                 <div class="pagination">
                     <button class="page-arrow"><i class="fas fa-chevron-left"></i></button>
                     <button class="page-arrow"><i class="fas fa-chevron-right"></i></button>

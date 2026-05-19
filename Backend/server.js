@@ -13,7 +13,6 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const featureRoutes = require('./routes/featureRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const { protect } = require('./middleware/authMiddleware');
 const { ensureDefaultFeatures } = require('./controllers/featureController');
 
 // Load .env file

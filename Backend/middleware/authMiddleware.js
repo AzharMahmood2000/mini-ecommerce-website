@@ -36,7 +36,7 @@ const protect = async (req, res, next) => {
 
     const decoded = jwt.verify(token, jwtSecret);
 
-    const user = await User.findById(decoded.id).select('username email role isActive name mobile location avatarUrl lastLoginAt');
+    const user = await User.findById(decoded.id).select('username email role isActive name mobile location avatarUrl profileImage lastLoginAt');
 
     if (!user) {
       console.log('  [Protect] User not found for token');
@@ -65,6 +65,7 @@ const protect = async (req, res, next) => {
       mobile: user.mobile,
       location: user.location,
       avatarUrl: user.avatarUrl,
+      profileImage: user.profileImage,
       lastLoginAt: user.lastLoginAt,
     };
 

@@ -47,6 +47,11 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: '',
     },
+    profileImage: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     role: {
       type: String,
       enum: ['user', 'admin'],
@@ -63,7 +68,22 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    minimize: false,
   }
 );
+
+userSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    ret.id = ret._id?.toString?.() || ret.id;
+    ret.name = ret.name || '';
+    ret.mobile = ret.mobile || '';
+    ret.location = ret.location || '';
+    ret.profileImage = ret.profileImage || ret.avatarUrl || '';
+    ret.avatarUrl = ret.avatarUrl || ret.profileImage || '';
+    delete ret.passwordHash;
+    delete ret.__v;
+    return ret;
+  },
+});
 
 module.exports = mongoose.model('User', userSchema);

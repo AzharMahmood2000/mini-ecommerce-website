@@ -150,6 +150,8 @@ const loginUser = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        name: user.name,
+        profileImage: user.profileImage || user.avatarUrl || '',
         lastLoginAt: user.lastLoginAt,
       },
     });
@@ -164,9 +166,35 @@ const loginUser = async (req, res) => {
   }
 };
 
+const buildUserProfileResponse = (user) => ({
+  id: user._id,
+  username: user.username,
+  email: user.email,
+  role: user.role,
+  name: user.name || '',
+  mobile: user.mobile || '',
+  location: user.location || '',
+  profileImage: user.profileImage || user.avatarUrl || '',
+  avatarUrl: user.avatarUrl || user.profileImage || '',
+  createdAt: user.createdAt,
+  updatedAt: user.updatedAt,
+});
+
+const normalizeOptionalString = (value, fallback = '') => {
+  if (typeof value === 'undefined' || value === null) {
+    return fallback;
+  }
+
+  if (typeof value !== 'string') {
+    return fallback;
+  }
+
+  return value.trim();
+};
+
 const getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id).select('username email role name mobile location avatarUrl profileImage createdAt updatedAt');
 
     if (!user) {
       return res.status(404).json({
@@ -177,15 +205,7 @@ const getCurrentUser = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        name: user.name,
-        mobile: user.mobile,
-        location: user.location,
-      },
+      user: buildUserProfileResponse(user),
     });
   } catch (error) {
     return res.status(500).json({
@@ -195,8 +215,130 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+const getProfile = async (req, res) => {
+  try {
+    console.log('[PROFILE GET] Endpoint hit');
+    console.log('[PROFILE GET] req.user:', req.user);
+
+    const user = await User.findById(req.user._id).select('username email role name mobile location avatarUrl profileImage createdAt updatedAt');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user: buildUserProfileResponse(user),
+    });
+  } catch (error) {
+    console.error('[PROFILE GET] Error:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Could not fetch profile.',
+    });
+  }
+};
+
+const getUserProfile = async (req, res) => {
+  console.log('[ROUTE] GET profile route hit');
+  return getProfile(req, res);
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    console.log('[PROFILE UPDATE] Endpoint hit');
+    console.log('[PROFILE UPDATE] req.user:', req.user);
+    console.log('[PROFILE UPDATE] req.body:', req.body);
+    console.log('[PROFILE UPDATE] req.file:', req.file || null);
+
+    const {
+      name,
+      username,
+      email,
+      mobile,
+      mobileNumber,
+      location,
+      profileImage,
+      avatarUrl,
+    } = req.body;
+
+    const user = await User.findById(req.user._id).select('username email role name mobile location avatarUrl profileImage createdAt updatedAt');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.',
+      });
+    }
+
+    const normalizedName = normalizeOptionalString(name || username, user.name || user.username || '');
+    const normalizedEmail = typeof email === 'string' && email.trim()
+      ? email.trim().toLowerCase()
+      : user.email;
+    const normalizedMobile = normalizeOptionalString(mobile || mobileNumber, user.mobile || '');
+    const normalizedLocation = normalizeOptionalString(location, user.location || '');
+    const normalizedProfileImage = normalizeOptionalString(profileImage || avatarUrl, user.profileImage || user.avatarUrl || '');
+
+    if (normalizedEmail !== user.email) {
+      const emailExists = await User.findOne({ email: normalizedEmail, _id: { $ne: user._id } }).select('_id');
+      if (emailExists) {
+        return res.status(409).json({
+          success: false,
+          message: 'Email already exists.',
+        });
+      }
+    }
+
+    user.name = normalizedName;
+    user.email = normalizedEmail;
+    user.mobile = normalizedMobile;
+    user.location = normalizedLocation;
+
+    if (normalizedProfileImage) {
+      user.profileImage = normalizedProfileImage;
+      user.avatarUrl = normalizedProfileImage;
+    }
+
+    if (req.file) {
+      const filePath = `/uploads/profiles/${req.file.filename}`;
+      user.profileImage = filePath;
+      user.avatarUrl = filePath;
+    }
+
+    await user.save();
+
+    console.log('[PROFILE UPDATE] Saved user:', {
+      id: user._id,
+      name: user.name,
+      mobile: user.mobile,
+      location: user.location,
+      profileImage: user.profileImage,
+      avatarUrl: user.avatarUrl,
+      updatedAt: user.updatedAt,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully.',
+      user: buildUserProfileResponse(user),
+    });
+  } catch (error) {
+    console.error('[PROFILE UPDATE] Error:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Could not update profile.',
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getCurrentUser,
+  getProfile,
+  getUserProfile,
+  updateProfile,
 };

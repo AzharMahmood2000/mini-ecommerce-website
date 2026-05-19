@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartItemsContainer = document.querySelector('.cart-items-section');
     const subtotalEl = document.getElementById('subtotal');
     const grandTotalEl = document.getElementById('grand-total');
+    const checkoutBtn = document.querySelector('.checkout-btn');
 
     function formatCurrency(amount) {
         return 'Rs. ' + amount.toLocaleString();
@@ -17,12 +18,51 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch cart from backend and render
     const apiBase = 'http://localhost:5000/api/cart';
 
+    function setEmptyCartState(message) {
+        if (cartItemsContainer) {
+            cartItemsContainer.innerHTML = `
+                <div class="empty-cart-state">
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        if (subtotalEl) subtotalEl.textContent = formatCurrency(0);
+        if (grandTotalEl) grandTotalEl.textContent = formatCurrency(0);
+        if (checkoutBtn) {
+            checkoutBtn.disabled = true;
+            checkoutBtn.setAttribute('aria-disabled', 'true');
+        }
+    }
+
+    function setCartHasItemsState() {
+        if (checkoutBtn) {
+            checkoutBtn.disabled = false;
+            checkoutBtn.removeAttribute('aria-disabled');
+        }
+    }
+
+    function setCartErrorState(message) {
+        if (cartItemsContainer) {
+            cartItemsContainer.innerHTML = `
+                <div class="empty-cart-state empty-cart-error">
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        if (subtotalEl) subtotalEl.textContent = formatCurrency(0);
+        if (grandTotalEl) grandTotalEl.textContent = formatCurrency(0);
+        if (checkoutBtn) {
+            checkoutBtn.disabled = true;
+            checkoutBtn.setAttribute('aria-disabled', 'true');
+        }
+    }
+
     async function fetchCartFromServer() {
         const cartId = localStorage.getItem('cartId');
         if (!cartId) {
-            cartItemsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: #777;">Your cart is empty</p>';
-            subtotalEl.textContent = formatCurrency(0);
-            grandTotalEl.textContent = formatCurrency(0);
+            setEmptyCartState('your cart is empty. Add some products to continue checkout .');
             return;
         }
 
@@ -34,11 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const items = (data.cart && Array.isArray(data.cart.items)) ? data.cart.items : [];
 
             if (!items.length) {
-                cartItemsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: #777;">Your cart is empty</p>';
-                subtotalEl.textContent = formatCurrency(0);
-                grandTotalEl.textContent = formatCurrency(0);
+                setEmptyCartState('your cart is empty. Add some products to continue checkout .');
                 return;
             }
+
+            setCartHasItemsState();
 
             cartItemsContainer.innerHTML = items.map(item => {
                 const basePrice = extractPrice(item.price);
@@ -77,9 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateSummaryFromServerItems(items);
         } catch (err) {
             console.error('Failed to load cart from server:', err.message || err);
-            cartItemsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: #777;">Unable to load cart</p>';
-            subtotalEl.textContent = formatCurrency(0);
-            grandTotalEl.textContent = formatCurrency(0);
+            setCartErrorState('Unable to load your cart right now. Please try again.');
         }
     }
 
@@ -170,10 +208,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial render from server
     fetchCartFromServer();
 
-    // Checkout button
-    const checkoutBtn = document.querySelector('.checkout-btn');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', (event) => {
+            if (checkoutBtn.disabled) {
+                event.preventDefault();
+                return;
+            }
+
             event.preventDefault();
             localStorage.setItem('checkoutMode', 'cart');
             localStorage.removeItem('checkoutItem');

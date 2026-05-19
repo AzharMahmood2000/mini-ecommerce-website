@@ -1,0 +1,9 @@
+{
+  "name": "mini-ecommerce-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npm --prefix backend start",
+    "backend:start": "npm --prefix backend start"
+  }
+}
