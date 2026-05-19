@@ -21,6 +21,19 @@ function switchToLogin() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const safeParseResponse = async (response) => {
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            try {
+                return await response.json();
+            } catch (parseError) {
+                return {};
+            }
+        }
+
+        return {};
+    };
+
     // Handle login form submission
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
@@ -48,10 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }),
                 });
 
-                const data = await response.json();
+                const data = await safeParseResponse(response);
 
                 if (!response.ok) {
-                    alert(data.message || 'Login failed.');
+                    alert('Invalid email or password');
                     return;
                 }
 
@@ -74,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 500);
             } catch (error) {
                 console.error('Login request failed:', error);
-                alert('Could not connect to the server. Please try again.');
+                alert('Something went wrong. Please try again later');
             }
         });
     }
@@ -111,10 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }),
                 });
 
-                const data = await response.json();
+                const data = await safeParseResponse(response);
 
                 if (!response.ok) {
-                    alert(data.message || 'Registration failed.');
+                    alert(data.message || 'Something went wrong. Please try again later');
                     return;
                 }
 
@@ -123,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 switchToLogin();
             } catch (error) {
                 console.error('Registration request failed:', error);
-                alert('Could not connect to the server. Please try again.');
+                alert('Something went wrong. Please try again later');
             }
         });
     }

@@ -1,6 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     const regForm = document.getElementById('registrationForm');
     const loginBtn = document.querySelector('.login-toggle-btn');
+    const safeParseResponse = async (response) => {
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            try {
+                return await response.json();
+            } catch (parseError) {
+                return {};
+            }
+        }
+
+        return {};
+    };
 
     // EMAIL VALIDATION FUNCTION
     function isValidEmail(email) {
@@ -45,11 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }),
                 });
 
-                const data = await response.json();
+                const data = await safeParseResponse(response);
 
                 // 3. SERVER ERROR HANDLING
                 if (!response.ok) {
-                    alert(data.message || 'Registration failed.');
+                    alert(data.message || 'Something went wrong. Please try again later');
                     return;
                 }
 
@@ -58,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } catch (error) {
                 console.error('Registration request failed:', error);
-                alert('Could not connect to the server. Please try again later.');
+                alert('Something went wrong. Please try again later');
             }
         });
     }

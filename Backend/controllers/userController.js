@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const SALT_ROUNDS = 10;
+const GENERIC_SERVER_MESSAGE = 'Something went wrong. Please try again later';
+const INVALID_LOGIN_MESSAGE = 'Invalid email or password';
 
 const registerUser = async (req, res) => {
   try {
@@ -71,7 +73,7 @@ const registerUser = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: error.message || 'Something went wrong while registering the user.',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -86,7 +88,7 @@ const loginUser = async (req, res) => {
     if (!loginIdentifier || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Provide emailOrUsername (or email or username) and password.',
+        message: 'Email/username and password are required.',
       });
     }
 
@@ -100,7 +102,7 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid username or password',
+        message: INVALID_LOGIN_MESSAGE,
       });
     }
 
@@ -114,7 +116,7 @@ const loginUser = async (req, res) => {
     if (!user.passwordHash) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid username or password',
+        message: INVALID_LOGIN_MESSAGE,
       });
     }
 
@@ -124,21 +126,21 @@ const loginUser = async (req, res) => {
     } catch (compareError) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid username or password',
+        message: INVALID_LOGIN_MESSAGE,
       });
     }
 
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid username or password',
+        message: INVALID_LOGIN_MESSAGE,
       });
     }
 
     if (!process.env.JWT_SECRET) {
       return res.status(500).json({
         success: false,
-        message: 'JWT secret is missing in environment variables.',
+        message: GENERIC_SERVER_MESSAGE,
       });
     }
 
@@ -176,7 +178,7 @@ const loginUser = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: error.message || 'Something went wrong while logging in.',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -225,7 +227,7 @@ const getCurrentUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message || 'Could not fetch current user.',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -252,7 +254,7 @@ const getProfile = async (req, res) => {
     console.error('[PROFILE GET] Error:', error);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Could not fetch profile.',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -344,7 +346,7 @@ const updateProfile = async (req, res) => {
     console.error('[PROFILE UPDATE] Error:', error);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Could not update profile.',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };

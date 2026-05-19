@@ -285,14 +285,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload),
             });
 
-            const data = await response.json();
+            const contentType = response.headers.get('content-type') || '';
+            const data = contentType.includes('application/json')
+                ? await response.json()
+                : {};
 
             console.log(" [DEBUG] Status:", response.status);
             console.log(" [DEBUG] OK:", response.ok);
             console.log(" [DEBUG] Data:", data);
 
             if (!response.ok) {
-                throw new Error(data.message || "Order placement failed. Please try again.");
+                throw new Error(data.message || 'Something went wrong. Please try again later');
             }
 
             // determine order id from response (support multiple shapes)
@@ -325,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (err) {
             console.error('❌ [ERROR] Place order failed:', err);
-            alert('Unable to place order: ' + (err.message || String(err)));
+            alert('Something went wrong. Please try again later');
             
             placeOrderBtn.disabled = false;
             placeOrderBtn.style.opacity = '1';

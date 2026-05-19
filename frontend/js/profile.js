@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const PROFILE_API_URL = 'http://localhost:5000/api/users/profile';
     const DEFAULT_AVATAR = '../assets/images/account.png';
+    const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please try again later';
 
     const navItems = document.querySelectorAll('.nav-item');
     const saveBtn = document.getElementById('save-btn');
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 data: {
                     success: false,
-                    message: error.message || 'Network error while calling profile API.',
+                    message: GENERIC_ERROR_MESSAGE,
                 },
             };
         }
@@ -141,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setBanner('', '');
         } catch (error) {
             console.error('[PROFILE] Load error:', error);
-            setBanner('error', error.message || 'Unable to load your profile right now.');
+            setBanner('error', GENERIC_ERROR_MESSAGE);
         } finally {
             setSavingState(false);
         }
@@ -232,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setBanner('success', data.message || 'Profile updated successfully.');
         } catch (error) {
             console.error('[PROFILE] Update error:', error);
-            setBanner('error', error.message || 'Unable to update profile right now.');
+            setBanner('error', GENERIC_ERROR_MESSAGE);
         } finally {
             setSavingState(false);
         }

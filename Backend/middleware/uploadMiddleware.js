@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+const GENERIC_SERVER_MESSAGE = 'Something went wrong. Please try again later';
 
 const uploadDir = path.join(__dirname, '..', 'uploads', 'products');
 
@@ -45,15 +46,18 @@ const singleImageUpload = (req, res, next) => {
       console.error('[MULTER] Stack:', err.stack);
 
       if (err instanceof multer.MulterError) {
+        const friendlyMessage = err.code === 'LIMIT_FILE_SIZE'
+          ? 'Image is too large. Please upload a file up to 5MB.'
+          : 'Unable to upload image. Please try a different file.';
         return res.status(400).json({
           success: false,
-          message: `Upload error: ${err.message}`,
+          message: friendlyMessage,
         });
       }
 
       return res.status(400).json({
         success: false,
-        message: err.message || 'File upload failed',
+        message: 'Unable to upload image. Please use a valid image file.',
       });
     }
 
@@ -99,15 +103,18 @@ const singleProfileImageUpload = (req, res, next) => {
       console.error('[PROFILE MULTER] Upload error:', err.message);
 
       if (err instanceof multer.MulterError) {
+        const friendlyMessage = err.code === 'LIMIT_FILE_SIZE'
+          ? 'Image is too large. Please upload a file up to 5MB.'
+          : 'Unable to upload image. Please try a different file.';
         return res.status(400).json({
           success: false,
-          message: `Upload error: ${err.message}`,
+          message: friendlyMessage,
         });
       }
 
       return res.status(400).json({
         success: false,
-        message: err.message || 'File upload failed',
+        message: 'Unable to upload image. Please use a valid image file.',
       });
     }
 

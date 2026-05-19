@@ -85,7 +85,7 @@ app.use((err, req, res, next) => {
   console.error(' Stack:', err.stack);
   res.status(500).json({
     success: false,
-    error: err.message,
+    message: 'Something went wrong. Please try again later',
   });
 });
 

@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const GENERIC_SERVER_MESSAGE = 'Something went wrong. Please try again later';
 
 const buildCustomerAddress = (shippingAddress = {}) => {
   if (typeof shippingAddress === 'string') {
@@ -72,7 +73,8 @@ const createOrder = async (req, res) => {
       order: createdOrder,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('[ORDER CREATE] Error creating order:', error);
+    res.status(500).json({ success: false, message: GENERIC_SERVER_MESSAGE });
   }
 };
 
@@ -93,7 +95,7 @@ const getMyOrders = async (req, res) => {
     console.error('[MY ORDERS] Error fetching orders:', error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to fetch user orders',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -112,7 +114,7 @@ const getAdminOrders = async (req, res) => {
     return res.status(200).json({ success: true, orders });
   } catch (error) {
     console.error('[ADMIN ORDERS] Error fetching orders:', error);
-    return res.status(500).json({ success: false, message: 'Failed to fetch orders' });
+    return res.status(500).json({ success: false, message: GENERIC_SERVER_MESSAGE });
   }
 };
 
@@ -140,7 +142,7 @@ const getOrderById = async (req, res) => {
     return res.status(200).json({ success: true, order });
   } catch (error) {
     console.error('[ORDER DETAILS] Error:', error);
-    return res.status(500).json({ success: false, message: 'Failed to load order' });
+    return res.status(500).json({ success: false, message: GENERIC_SERVER_MESSAGE });
   }
 };
 
@@ -160,7 +162,7 @@ const updateOrderStatus = async (req, res) => {
     return res.status(200).json({ success: true, message: 'Order status updated', order });
   } catch (error) {
     console.error('Update order status error:', error);
-    return res.status(500).json({ success: false, message: 'Server error' });
+    return res.status(500).json({ success: false, message: GENERIC_SERVER_MESSAGE });
   }
 };
 

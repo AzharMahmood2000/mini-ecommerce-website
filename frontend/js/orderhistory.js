@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = 'http://localhost:5000/api/orders';
+    const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please try again later';
     const tabButtons = document.querySelectorAll('.tab-btn');
     const pageArrows = document.querySelectorAll('.page-arrow');
     const ordersTableBody = document.getElementById('ordersTableBody');
@@ -179,16 +180,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
             });
 
-            const data = await response.json();
+            const contentType = response.headers.get('content-type') || '';
+            const data = contentType.includes('application/json')
+                ? await response.json()
+                : {};
 
             if (!response.ok || !data.success) {
-                throw new Error(data.message || 'Unable to load orders.');
+                throw new Error(data.message || GENERIC_ERROR_MESSAGE);
             }
 
             renderOrders(Array.isArray(data.orders) ? data.orders : []);
         } catch (error) {
             console.error('[ORDER HISTORY] Failed to load orders:', error);
-            renderState('error', error.message || 'Unable to load your orders right now.');
+            renderState('error', GENERIC_ERROR_MESSAGE);
             updateStats([]);
         }
     };

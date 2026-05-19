@@ -1,4 +1,5 @@
 const Feature = require('../models/Feature');
+const GENERIC_SERVER_MESSAGE = 'Something went wrong. Please try again later';
 
 const FEATURE_DEFINITIONS = [
   {
@@ -78,7 +79,7 @@ const getAllFeatures = async (req, res) => {
     console.error('Get features error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to fetch features',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -112,7 +113,7 @@ const getFeatureByKey = async (req, res) => {
     console.error('Get feature error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to fetch feature',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -155,7 +156,7 @@ const updateFeature = async (req, res) => {
     console.error('Update feature error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to update feature',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };

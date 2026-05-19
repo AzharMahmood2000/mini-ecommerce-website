@@ -1,15 +1,16 @@
 const requireAdmin = (req, res, next) => {
+  const GENERIC_SERVER_MESSAGE = 'Something went wrong. Please try again later';
   try {
     if (!req.user) {
       console.warn('[ADMIN AUTH] Missing req.user. protect() must run first.');
 
-      return res.status(500).json({
+      return res.status(401).json({
         success: false,
-        message: 'Authentication middleware must run before admin authorization.',
+        message: 'Unauthorized access. Please login again.',
       });
     }
 
-    if (req.user.role !== 'admin') {
+    if (String(req.user.role || '').toLowerCase() !== 'admin') {
       console.warn('[ADMIN AUTH] Forbidden access attempt by non-admin user:', {
         userId: req.user._id || req.user.id,
         email: req.user.email,
@@ -18,7 +19,7 @@ const requireAdmin = (req, res, next) => {
 
       return res.status(403).json({
         success: false,
-        message: "Access denied. Only administrators are authorized to create products.",
+        message: 'Access Denied',
       });
     }
 
@@ -33,7 +34,7 @@ const requireAdmin = (req, res, next) => {
 
     return res.status(500).json({
       success: false,
-      message: 'Error while checking admin permissions.',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };

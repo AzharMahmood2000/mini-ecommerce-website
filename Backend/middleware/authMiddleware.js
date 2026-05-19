@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const GENERIC_SERVER_MESSAGE = 'Something went wrong. Please try again later';
 
 const protect = async (req, res, next) => {
   try {
@@ -30,7 +31,7 @@ const protect = async (req, res, next) => {
       console.log('  [Protect] No JWT secret configured');
       return res.status(500).json({
         success: false,
-        message: 'JWT secret is not configured on the server.',
+        message: GENERIC_SERVER_MESSAGE,
       });
     }
 
@@ -75,20 +76,20 @@ const protect = async (req, res, next) => {
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         success: false,
-        message: 'Token expired. Please login again.',
+        message: 'Unauthorized access. Please login again.',
       });
     }
 
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
         success: false,
-        message: 'Invalid token. Please provide a valid token.',
+        message: 'Unauthorized access. Please login again.',
       });
     }
 
     return res.status(500).json({
       success: false,
-      message: 'Error while verifying token.',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };

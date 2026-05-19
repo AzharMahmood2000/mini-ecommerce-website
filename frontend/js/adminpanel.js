@@ -1,6 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     // ==================== CONFIG ====================
     const API_BASE_URL = 'http://localhost:5000/api';
+    const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please try again later';
+
+    const safeParseResponse = async (response) => {
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+            try {
+                return await response.json();
+            } catch (parseError) {
+                return {};
+            }
+        }
+
+        return {};
+    };
 
     // ==================== DOM ELEMENTS ====================
     const modal = document.getElementById('addProductModal');
@@ -137,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadFeatures = async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/features`);
-            const data = await response.json();
+            const data = await safeParseResponse(response);
 
             if (!response.ok || !data.success) {
                 throw new Error(data.message || 'Failed to load features');
@@ -175,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ message }),
             });
 
-            const data = await response.json();
+            const data = await safeParseResponse(response);
             if (!response.ok || !data.success) {
                 showNotification(data.message || 'Failed to save feature', 'error');
                 return;
@@ -187,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadFeatures();
         } catch (error) {
             console.error('[FEATURES] Submit error:', error);
-            showNotification('Error saving feature: ' + error.message, 'error');
+            showNotification(GENERIC_ERROR_MESSAGE, 'error');
         }
     };
 
@@ -322,11 +336,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            const data = await response.json();
+            const data = await safeParseResponse(response);
             console.log('[ADMIN FORM] Response:', data);
 
             if (!response.ok) {
-                showNotification(data.message || (editId ? 'Failed to update product' : 'Failed to add product'), 'error');
+                showNotification(data.message || GENERIC_ERROR_MESSAGE, 'error');
                 return;
             }
 
@@ -349,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500);
         } catch (error) {
             console.error('[ADMIN FORM] Error:', error);
-            showNotification('Error: ' + error.message, 'error');
+            showNotification(GENERIC_ERROR_MESSAGE, 'error');
         }
     };
 
@@ -385,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
             });
 
-            const data = await response.json();
+            const data = await safeParseResponse(response);
             console.log('[PRODUCTS] Fetched:', data);
 
             if (!response.ok || !data.success) {
@@ -618,7 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
             });
 
-            const data = await response.json();
+            const data = await safeParseResponse(response);
             if (!response.ok) {
                 showNotification(data.message || 'Failed to delete product', 'error');
                 return;
@@ -637,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => loadAllProducts(currentPage), 300);
         } catch (error) {
             console.error('[DELETE PRODUCT] Error:', error);
-            showNotification('Error deleting product: ' + error.message, 'error');
+            showNotification(GENERIC_ERROR_MESSAGE, 'error');
         }
     };
 
@@ -657,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
             });
 
-            const data = await response.json();
+            const data = await safeParseResponse(response);
             if (!response.ok || !data.success) {
                 showNotification(data.message || 'Failed to update home visibility', 'error');
                 return;
@@ -668,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadAllProducts(currentPage);
         } catch (error) {
             console.error('[TOGGLE HOME] Error:', error);
-            showNotification('Error updating home visibility: ' + error.message, 'error');
+            showNotification(GENERIC_ERROR_MESSAGE, 'error');
         }
     };
 
@@ -710,15 +724,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Fetch single product details
                 try {
                     const resp = await fetch(`${API_BASE_URL}/products/${productId}`);
-                    const json = await resp.json();
+                    const json = await safeParseResponse(resp);
                     if (!resp.ok) {
-                        showNotification(json.message || 'Failed to fetch product details', 'error');
+                        showNotification(json.message || GENERIC_ERROR_MESSAGE, 'error');
                         return;
                     }
                     openEditModal(json.product);
                 } catch (err) {
                     console.error('[FETCH PRODUCT] Error:', err);
-                    showNotification('Error fetching product details', 'error');
+                    showNotification(GENERIC_ERROR_MESSAGE, 'error');
                 }
                 return;
             }

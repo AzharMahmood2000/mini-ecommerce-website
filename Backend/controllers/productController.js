@@ -1,5 +1,6 @@
 const Product = require('../models/Product');
 const mongoose = require('mongoose');
+const GENERIC_SERVER_MESSAGE = 'Something went wrong. Please try again later';
 
 const OFFICIAL_CATEGORIES = [
   'Electronics',
@@ -138,7 +139,7 @@ const createProduct = async (req, res) => {
     console.error('Create product error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to create product',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -215,7 +216,7 @@ const getAllProducts = async (req, res) => {
     console.error('Get all products error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to fetch products',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -269,7 +270,7 @@ const getAdminProducts = async (req, res) => {
     console.error('Get admin products error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to fetch admin products',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -303,7 +304,7 @@ const getProductById = async (req, res) => {
     console.error('Get product error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to fetch product',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -396,7 +397,7 @@ const updateProduct = async (req, res) => {
     console.error('Update product error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to update product',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -419,7 +420,7 @@ const getHomeProducts = async (req, res) => {
     console.error('Get home products error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to fetch home products',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -456,7 +457,7 @@ const toggleHomeProduct = async (req, res) => {
     console.error('Toggle home product error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to toggle home page visibility',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -491,7 +492,7 @@ const deleteProduct = async (req, res) => {
     console.error('Delete product error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to delete product',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -518,7 +519,7 @@ const getCategories = async (req, res) => {
     console.error('Get categories error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to fetch categories',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };
@@ -582,7 +583,7 @@ const getProductsByCategory = async (req, res) => {
     console.error('Get products by category error:', error.message);
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to fetch category products',
+      message: GENERIC_SERVER_MESSAGE,
     });
   }
 };

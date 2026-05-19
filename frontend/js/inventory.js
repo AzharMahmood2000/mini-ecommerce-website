@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const API_BASE_URL = 'http://localhost:5000/api';
   const API_ORIGIN = 'http://localhost:5000';
+  const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please try again later';
   const tableBody = document.querySelector('#inventoryTable tbody');
   const filterCategory = document.getElementById('filterCategory');
   const filterStock = document.getElementById('filterStock');
@@ -22,6 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeMenu = null;
 
   const getToken = () => localStorage.getItem('authToken');
+  const safeParseResponse = async (response) => {
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      try {
+        return await response.json();
+      } catch (parseError) {
+        return {};
+      }
+    }
+
+    return {};
+  };
 
   const resolveImageUrl = (imageUrl) => {
     if (!imageUrl) return '../assets/images/Home/1.png';
@@ -142,12 +155,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadProducts = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/products`);
-      const data = await response.json();
+      const data = await safeParseResponse(response);
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || GENERIC_ERROR_MESSAGE);
+      }
+
       products = Array.isArray(data?.products) ? data.products : [];
       populateCategoryFilter();
       applyFilters();
     } catch (error) {
       console.error('Load products error:', error);
+      alert(GENERIC_ERROR_MESSAGE);
       products = [];
       renderTable(products);
     }
@@ -196,16 +215,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      const result = await response.json();
+      const result = await safeParseResponse(response);
 
       if (!response.ok) {
-        throw new Error(result.message || 'Request failed');
+        throw new Error(result.message || GENERIC_ERROR_MESSAGE);
       }
 
       closeModal();
       await loadProducts();
     } catch (error) {
-      alert('Error: ' + error.message);
+      alert(GENERIC_ERROR_MESSAGE);
     }
   };
 
@@ -222,16 +241,16 @@ document.addEventListener('DOMContentLoaded', () => {
         },
       });
 
-      const result = await response.json();
+      const result = await safeParseResponse(response);
 
       if (!response.ok) {
-        throw new Error(result.message || 'Delete failed');
+        throw new Error(result.message || GENERIC_ERROR_MESSAGE);
       }
 
       closeDeleteModal();
       await loadProducts();
     } catch (error) {
-      alert('Error: ' + error.message);
+      alert(GENERIC_ERROR_MESSAGE);
     }
   };
 

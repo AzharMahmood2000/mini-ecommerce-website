@@ -85,7 +85,10 @@ async function renderFooterCategories() {
 
     try {
         const response = await fetch('http://localhost:5000/api/categories');
-        const data = await response.json();
+        const contentType = response.headers.get('content-type') || '';
+        const data = contentType.includes('application/json')
+            ? await response.json()
+            : {};
 
         if (!response.ok || !data.success) {
             return;

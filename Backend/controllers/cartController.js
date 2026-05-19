@@ -1,5 +1,6 @@
 const Cart = require('../models/Cart');
 const mongoose = require('mongoose');
+const GENERIC_SERVER_MESSAGE = 'Something went wrong. Please try again later';
 
 // GET /api/cart?cartId=...
 const getCart = async (req, res) => {
@@ -17,7 +18,7 @@ const getCart = async (req, res) => {
     return res.json({ success: true, cart });
   } catch (error) {
     console.error('getCart error:', error.message);
-    return res.status(500).json({ success: false, message: 'Server error' });
+    return res.status(500).json({ success: false, message: GENERIC_SERVER_MESSAGE });
   }
 };
 
@@ -75,8 +76,7 @@ const upsertCart = async (req, res) => {
     return res.json({ success: true, cartId: cart.cartId, cart });
   } catch (error) {
     console.error('upsertCart error:', error);
-    // return more diagnostic info in server logs; respond with generic message to client
-    return res.status(500).json({ success: false, message: 'Server error' });
+    return res.status(500).json({ success: false, message: GENERIC_SERVER_MESSAGE });
   }
 };
 
